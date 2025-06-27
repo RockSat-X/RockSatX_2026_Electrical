@@ -1,6 +1,8 @@
-# Virgina Tech RockSat-X 2026 Project.
+# Virginia Tech RockSat-X 2026 Project.
 
 ---
+# Key Point
+- STICK TO USER MANUAL
 
 # Etiquette.
 
@@ -8,12 +10,23 @@
 - [_**Don't track chunky files.**_](#dont-track-chunky-files)
 
 ---
+# To Do's
+- [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
+- [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
+- [ ] Integation of Function Indicators (Lights/Buzzers).
+- [ ] Build Mechanial Test Beds for Each Main Actuation.
 
-- [ ] Make testing beds.
+#### End of Project Testing
+- [ ] Full Sequence Test.
+- [ ] Full Walk Around Inspection.
+- [ ] Summer Testing Personel Breifing.
+- [ ] Locktight/Hotglue/Secure Fasteners.
+- [ ] Vibration Test.
+- [ ] Summer Testing Procedures Checksheets.
 
 ---
 
-## Dont Track Junk Files.
+## Don't Track Junk Files.
 
 When you add files for Git to track,
 it will mean that other people will have access to those files when you push your work to GitHub,
@@ -36,20 +49,20 @@ Some examples of things that might be _OK_ to track through version control:
 - ✅ 3D models like STEP, STL, etc.
 
 Remember,
-kind engineers are the most productive engineers.
+Kind engineers are the most productive engineers.
 Take some time to look at the files you are going to be pushing to GitHub.
 
 > [!TIP]
 > Let's say you opened SolidWorks and started to make a thingmajig.
-> After you feel like you reached a good checkpoint,
-> you decide save your progress so far with the GitHub Desktop GUI.
+> After you feel like you have reached a good checkpoint,
+> you decide to save your progress so far with the GitHub Desktop GUI.
 > The GUI lists all the files that it sees that aren't currently being tracked;
 > things like `my_new_part.sldprt`, `my_new_thing.sldasm`, `.workspace_settings`.
 >
 > The first two files are obviously the thing you've been working on,
 > so you should be tracking those with version control,
 > but what about `.workspace_settings`?
-> You opened the file in NotePad and see that it seems to keep track of stuff like you window layout and what theme you're currently using.
+> You opened the file in NotePad and see that it seems to keep track of stuff like your window layout and what theme you're currently using.
 > Should this file be tracked with version control?
 > 
 > **NO!**
@@ -75,19 +88,19 @@ Take some time to look at the files you are going to be pushing to GitHub.
 > the point of this etiquette is so that we can be kind to each other and not clutter the project repository,
 > very much like you wouldn't want to clutter up a guest's house.
 
-## Dont Track Chunky Files.
+## Don't Track Chunky Files.
 
 When you track a file with Git,
 be wary of its file size.
 This doesn't really matter for certain things like source code,
 where even if there were a hundred thousand lines of code in this whole project,
-this would only roughly amount to `100,000 * 100 bytes = 10 megabytes` of space assuming 100 bytes per line.
+this would only roughly amount to `100,000 * 100 bytes = 10 megabytes` of space, assuming 100 bytes per line.
 However, for things like 3D models,
 especially uncompressed formats like STEP and STL,
 a complicated model might be on the order of 50 megabytes or larger.
 If this is the case,
 see if there's a way to trim down the fat
-(e.g. reducing the complexity of the STEP model by opening your favorite CAD program and hide components and then re-export).
+(e.g., reducing the complexity of the STEP model by opening your favorite CAD program and hide components and then re-export).
 
 Why?
 Because you should be kind to the other people here.
