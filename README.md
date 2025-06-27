@@ -1,6 +1,8 @@
 # Virginia Tech RockSat-X 2026 Project.
 
 ---
+# Key Point
+STICK TO USER MANUAL
 
 # Etiquette.
 
@@ -9,9 +11,16 @@
 
 ---
 # To Do's
-- [ ] Vibration Test.
+- [ ] Integation of Function Indicators (lights/buzzers).
+- [ ] Build Mechanial Test Beds for Each Main Function.
+
+## End of Project Testing
 - [ ] Full Sequence Test.
-- [ ] 
+- [ ] Full Walk Around Inspection.
+- [ ] Summer Testing Personel Breifing
+- [ ] Locktight/Hotglue/Secure Fasteners.
+- [ ] Vibration Test.
+- [ ] Summer Testing Procedures Checksheet.
 
 ---
 
