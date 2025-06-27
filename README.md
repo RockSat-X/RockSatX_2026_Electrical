@@ -9,7 +9,7 @@
 
 ---
 
-[ ] Make testing beds.
+- [ ] Make testing beds.
 
 ---
 
