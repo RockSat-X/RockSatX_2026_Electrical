@@ -10,11 +10,20 @@
 - [_**Don't track chunky files.**_](#dont-track-chunky-files)
 
 ---
-# To Do's
+# Action Items
+#### Design Stage
 - [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
 - [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
+- [ ] Design for Function Indicatiors for Power Functions.
+- [ ] Main Material List (One System of Measurement).
+- [ ] Full 3D Printed Payload.
+- [ ] Desgin Mechanial Test Beds for Each Main Actuation.
+- [ ] Finite Element Analysis.
+
+#### Build Stage
 - [ ] Integation of Function Indicators (Lights/Buzzers).
-- [ ] Build Mechanial Test Beds for Each Main Actuation.
+- [ ] Instal RBF Inhibits and Tags.
+- [ ] Build Test Beds and Run Actuation Testing.
 
 #### End of Project Testing
 - [ ] Full Sequence Test.
