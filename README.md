@@ -2,7 +2,7 @@
 
 ---
 # Key Point
-STICK TO USER MANUAL
+- STICK TO USER MANUAL
 
 # Etiquette.
 
@@ -11,16 +11,18 @@ STICK TO USER MANUAL
 
 ---
 # To Do's
-- [ ] Integation of Function Indicators (lights/buzzers).
-- [ ] Build Mechanial Test Beds for Each Main Function.
+- [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
+- [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
+- [ ] Integation of Function Indicators (Lights/Buzzers).
+- [ ] Build Mechanial Test Beds for Each Main Actuation.
 
-## End of Project Testing
+#### End of Project Testing
 - [ ] Full Sequence Test.
 - [ ] Full Walk Around Inspection.
-- [ ] Summer Testing Personel Breifing
+- [ ] Summer Testing Personel Breifing.
 - [ ] Locktight/Hotglue/Secure Fasteners.
 - [ ] Vibration Test.
-- [ ] Summer Testing Procedures Checksheet.
+- [ ] Summer Testing Procedures Checksheets.
 
 ---
 
