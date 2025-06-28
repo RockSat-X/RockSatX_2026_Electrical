@@ -12,7 +12,7 @@
 ---
 # Action Items
 
-#### Design Stage
+#### Design Phase
 - [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
 - [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
 - [ ] Design for Function Indicatiors for Power Functions.
@@ -21,17 +21,17 @@
 - [ ] Desgin Mechanial Test Beds for Each Main Actuation.
 - [ ] Finite Element Analysis.
 
-#### Build Stage
-- [ ] Integation of Function Indicators (Lights/Buzzers).
-- [ ] Instal RBF Inhibits and Tags.
-- [ ] Build Test Beds and Run Actuation Testing.
+#### Build Phase
+- [ ] Integration of function indicators (lights, buzzers, etc.).
+- [ ] Install RBF inhibits and tags.
+- [ ] Build test beds and run actuation testing.
 
-#### End of Project Testing
-- [ ] Full Sequence Test.
-- [ ] Full Walk Around Inspection.
+#### Test Phase
 - [ ] Locktight/hotglue/secure fasteners.
+- [ ] Full sequence test.
 - [ ] Vibration test.
-- [ ] Summer testing
+- [ ] Summer testing preparations.
+  - [ ] Full walk around inspection.
   - [ ] Procedures checksheets.
   - [ ] Personel briefing.
 
