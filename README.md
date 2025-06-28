@@ -11,6 +11,7 @@
 
 ---
 # Action Items
+
 #### Design Stage
 - [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
 - [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
@@ -28,10 +29,11 @@
 #### End of Project Testing
 - [ ] Full Sequence Test.
 - [ ] Full Walk Around Inspection.
-- [ ] Summer Testing Personel Breifing.
-- [ ] Locktight/Hotglue/Secure Fasteners.
-- [ ] Vibration Test.
-- [ ] Summer Testing Procedures Checksheets.
+- [ ] Locktight/hotglue/secure fasteners.
+- [ ] Vibration test.
+- [ ] Summer testing
+  - [ ] Procedures checksheets.
+  - [ ] Personel briefing.
 
 ---
 
