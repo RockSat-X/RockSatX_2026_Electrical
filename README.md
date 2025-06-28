@@ -13,13 +13,13 @@
 # Action Items
 
 #### Design Phase
-- [ ] Aluminium/Plywood Mock-Up of Deck Plate and Expierement.
-- [ ] Design for Easy Access Remove Before Flight (RBF) Pins.
-- [ ] Design for Function Indicatiors for Power Functions.
-- [ ] Main Material List (One System of Measurement).
-- [ ] Full 3D Printed Payload.
-- [ ] Desgin Mechanial Test Beds for Each Main Actuation.
-- [ ] Finite Element Analysis.
+- [ ] Aluminium/plywood mock-up of deck plate and experiment.
+- [ ] Design for easy access remove before flight (RBF) pins.
+- [ ] Design for function indicators for power functions.
+- [ ] Main material list (one system of measurement).
+- [ ] Full 3D printed payload.
+- [ ] Desgin mechanial test beds for each main actuation.
+- [ ] Finite element analysis.
 
 #### Build Phase
 - [ ] Integration of function indicators (lights, buzzers, etc.).
