@@ -52,9 +52,9 @@ We're now almost ready to make a "commit".
 > <p align="center"><kbd><img src="./misc/GUI_Pull.jpg" width="80%"></kbd></p>
 >
 > There shouldn't be any conflict between the new commits
-> and the changes you've made so far;
-> if there is an issue,
-> see [Git Conflicts](#git-conflicts) or create a [ticket](#creating-tickets).
+> and the changes you've made so far,
+> but if there is one,
+> see [Git Conflicts](#git-conflicts).
 
 Go ahead and press the big blue "commit" button.
 
@@ -257,4 +257,32 @@ That's pretty much the gist of using issues on GitHub.
 
 # Git Conflicts.
 
-TODO
+As you work,
+you might encounter certain conflicts with other people's work.
+This will happen whenever you make several commits on a branch
+and so does another person independently.
+As a result,
+there ends up being a "divergence" between you two.
+
+One of you will push their commits to GitHub first,
+and as a result,
+the other person will be the one that has an out-of-date repository.
+
+If the files that were changed by the two of you are completely independent,
+then this is often pretty easy to fix;
+it is just a simple merge.
+
+But if the two of you modified the same file
+(e.g. edited the same code or tweaked the same CAD model)
+then the situtation is a bit trickier.
+
+If this situation describes you,
+feel free to create a [ticket](#creating-tickets) to see how we can resolve it.
+I'd put in time to explain how to do it here,
+but there's a lot of things to look out for,
+and besides there's plenty of resources online.
+
+> [!TIP]
+> The usage of AI in this scenario is probably good,
+> since Git version control is littered with lots of weird technical terms and edge cases.
+> Maybe try out GitHub's Copilot?
