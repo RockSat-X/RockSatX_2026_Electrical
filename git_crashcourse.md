@@ -183,36 +183,33 @@ Your introduction file can be found in its expected location on the `main` branc
 
 If you have questions about the project or things you'd like to see improved upon,
 it's best to create a ticket on GitHub.
-This is done through the "Issues" tab on the page of the base repository.
+This is done through the "Issues" tab on the page of the RSX2026 repository.
 
-<p align="center"><kbd><img src="./misc/GitHubIssueTab.jpg" width="80%"></kbd></p>
+<p align="center"><kbd><img src="./misc/GitHub_Issue_Page.jpg" width="80%"></kbd></p>
 
 Give a summary of your ticket in the title field
 and expand it further (if needed) in the description box.
 
-<p align="center"><kbd><img src="./misc/GitHubExampleIssue.jpg" width="80%"></kbd></p>
+<p align="center"><kbd><img src="./misc/GitHub_Making_Issue.jpg" width="80%"></kbd></p>
 
 A thread will be created where anyone can contribute to the discussion.
+The ticket can be assigned people and labels to better help categorize it.
 
-<p align="center"><kbd><img src="./misc/GitHubIssueAnswered.jpg" width="80%"></kbd></p>
+<p align="center"><kbd><img src="./misc/GitHub_Issue_Thread.jpg" width="80%"></kbd></p>
 
-When you feel like you got what you wanted,
-you can close the ticket.
+When you feel like you got the answer you wanted,
+you can close the ticket;
+if needed,
+the ticket can always be reopened later on.
 
-<p align="center"><kbd><img src="./misc/GitHubIssueBye.jpg" width="80%"></kbd></p>
-
-Even if the ticket is closed,
-the discussion thread can still be commented on or the ticket as a whole be reopened
-(which is to make it more obvious that we still need to talk about the subject more).
-
-<p align="center"><kbd><img src="./misc/GitHubIssueClosed.jpg" width="80%"></kbd></p>
+<p align="center"><kbd><img src="./misc/GitHub_Closed_Issue.jpg" width="80%"></kbd></p>
 
 You'll be able to see the tickets you've made and anyone else's for future prosperity 
 on the issue page of the base repository.
 
-<p align="center"><kbd><img src="./misc/GitHubIssueList.jpg" width="80%"></kbd></p>
+<p align="center"><kbd><img src="./misc/GitHub_Issue_List.jpg" width="80%"></kbd></p>
 
-That's pretty the gist of using issue tickets on GitHub.
+That's pretty much the gist of using issues on GitHub.
 
 > [!TIP]
 > Discord is best reserved for virtual meetings or miscellaneous conversations.
@@ -222,24 +219,6 @@ That's pretty the gist of using issue tickets on GitHub.
 > create a ticket on GitHub whenever possible.
 > Over time,
 > the issue tab will serve as a great reference to look back upon for your fellow engineers.
-
-> [!IMPORTANT]
-> GitHub Issues can be assigned to specific people and be labled
-> (e.g. "bug", "help wanted", "question", etc.)
-> as a way to categorize multiple tickets.
->
-> <p align="center"><kbd><img src="./misc/GitHubIssueCategorizingAccess.jpg" width="30%"></kbd></p>
->
-> However due to GitHub's implementation quirks,
-> you will not be able to set the assignees or labels for any ticket you create
-> unless you have write permissions to the base repository
-> (which only your team leads will have).
-> What you will see instead are some unconfigurable settings:
->
-> <p align="center"><kbd><img src="./misc/GitHubIssueCategorizingNoAccess.jpg" width="30%"></kbd></p>
->
-> This is just an unfortunate "issue" of the GitHub Issue ticketing system.
-> Your team leads will do their best to organize and address every ticket.
 
 ***
 
