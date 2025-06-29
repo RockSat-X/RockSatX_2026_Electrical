@@ -6,12 +6,10 @@
 - [Action Items](#action-items).
 - Git Workflow.
   - [Onboarding the Git Workflow](#onboarding-the-git-workflow).
-  - [Creating tickets](#creating-tickets).
+  - [Creating Tickets](#creating-tickets).
   - [Git Conflicts](#git-conflicts).
 
-***
-
-## Action Items.
+# Action Items.
 
 - [ ] Design.
   - [ ] Aluminium/plywood mock-up of deck plate and experiment.
@@ -36,9 +34,7 @@
     - [ ] Procedures checksheets.
     - [ ] Personel briefing.
 
-***
-
-### Don't Track Junk Files.
+# Don't Track Junk Files.
 
 When you add files for Git to track,
 it will mean that other people will have access to those files when you push your work to GitHub,
@@ -100,9 +96,7 @@ Take some time to look at the files you are going to be pushing to GitHub.
 > the point of this etiquette is so that we can be kind to each other and not clutter the project repository,
 > very much like you wouldn't want to clutter up a guest's house.
 
-***
-
-### Don't Track Chunky Files.
+# Don't Track Chunky Files.
 
 When you track a file with Git,
 be wary of its file size.
@@ -123,9 +117,7 @@ this means when they perform a fetch on the repository,
 they'll be forced to download all your chunky files.
 Don't waste their time and storage if you can.
 
-***
-
-### Onboarding the Git Workflow.
+# Onboarding the Git Workflow.
 
 First download the [GitHub Desktop GUI client](https://desktop.github.com/download/).
 Go through the installation process and create your GitHub account (if needed) and sign into the GUI with it.
@@ -339,7 +331,7 @@ Your introduction file can be found in its expected location on the `main` branc
 
 <p align="center"><kbd><img src="./misc/GitHub_Introduction_On_Main_Branch.jpg" width="80%"></kbd></p>
 
-### Creating Tickets.
+# Creating Tickets.
 
 If you have questions about the project or things you'd like to see improved upon,
 it's best to create a ticket on GitHub.
@@ -380,9 +372,7 @@ That's pretty much the gist of using issues on GitHub.
 > Over time,
 > the issue tab will serve as a great reference to look back upon for your fellow engineers.
 
-***
-
-### Git Conflicts.
+# Git Conflicts.
 
 As you work,
 you might encounter certain conflicts with other people's work.
