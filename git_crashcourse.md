@@ -23,6 +23,8 @@ Go ahead and introduce yourself here to your fellow engineers.
 Examples of things you can tell about yourself:
 
 - Name (and if it's typical that people mispronunce your name, help them out here).
+- Major.
+- Past experience.
 - Pets.
 - Spice tolerance.
 - Blood type.
@@ -34,8 +36,27 @@ the GUI will detect that a new file was created.
 After you're done writing,
 go ahead and describe what you've done in the summary box.
 You can optionally go into more details with the description box.
-Once you feel ready,
-you can press the big blue "commit" button.
+
+We're now almost ready to make a "commit".
+
+> [!IMPORTANT]
+> But before you make a "commit",
+> it's best to make sure your copy of the repository is up-to-date.
+> This is done by "fetching".
+>
+> <p align="center"><kbd><img src="./misc/GUI_Fetch.jpg" width="80%"></kbd></p>
+>
+> If there were new commits made on the RSX2026 repository since you cloned it,
+> you can "pull" them to be downloaded.
+>
+> <p align="center"><kbd><img src="./misc/GUI_Pull.jpg" width="80%"></kbd></p>
+>
+> There shouldn't be any conflict between the new commits
+> and the changes you've made so far;
+> if there is an issue,
+> see [Git Conflicts](#git-conflicts) or create a [ticket](#creating-tickets).
+
+Go ahead and press the big blue "commit" button.
 
 <p align="center"><kbd><img src="./misc/GUI_New_Introduction.jpg" width="80%"></kbd></p>
 
@@ -69,9 +90,23 @@ what a pull request is will be explained later,
 but for now,
 know that it is just a barrier for quality control.
 
-To get around this,
-we first undo our commit that we just did.
-Don't worry, this will not delete your work.
+> [!CAUTION]
+> If you instead get the following warning:
+>
+> <p align="center"><kbd><img src="./misc/GUI_New_Commits_On_Remote.jpg" width="80%"></kbd></p>
+>
+> This means there were updates to the RSX2026 repository on the `main` branch
+> since the time you clone the repository to your local machine
+> (see [Git Conflicts](#git-conflicts)).
+>
+> You can learn how to resolve this conflict,
+> but for the sake of onboarding,
+> you can just start over by recloning the repository again
+> and this time have better luck.
+
+To get around this pull request,
+we first undo our commit that we just did;
+don't worry, this will not delete your work.
 
 <p align="center"><kbd><img src="./misc/GUI_Undoing_Commit.jpg" width="80%"></kbd></p>
 
@@ -179,7 +214,7 @@ Your introduction file can be found in its expected location on the `main` branc
 
 <p align="center"><kbd><img src="./misc/GitHub_Introduction_On_Main_Branch.jpg" width="80%"></kbd></p>
 
-# Creating tickets.
+# Creating Tickets.
 
 If you have questions about the project or things you'd like to see improved upon,
 it's best to create a ticket on GitHub.
@@ -219,3 +254,7 @@ That's pretty much the gist of using issues on GitHub.
 > create a ticket on GitHub whenever possible.
 > Over time,
 > the issue tab will serve as a great reference to look back upon for your fellow engineers.
+
+# Git Conflicts.
+
+TODO
