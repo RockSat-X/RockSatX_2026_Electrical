@@ -1,6 +1,6 @@
 ***
 
-# Onboarding.
+# Onboarding the Git Workflow.
 
 First download the [GitHub Desktop GUI client](https://desktop.github.com/download/).
 Go through the installation process and create your GitHub account (if needed) and sign into the GUI with it.
@@ -8,7 +8,7 @@ Go through the installation process and create your GitHub account (if needed) a
 <p align="center"><kbd><img src="./misc/GUI_Lets_Get_Started.jpg" width="80%"></kbd></p>
 
 Next,
-clone the RSXVT2026 project using the [GitHub URL](https://github.com/RockSat-X/RSXVT2026/).
+clone the RSXVT2026 project using its [GitHub URL](https://github.com/RockSat-X/RSXVT2026/).
 
 <p align="center"><kbd><img src="./misc/GUI_Cloning_Repo.jpg" width="80%"></kbd></p>
 
@@ -18,8 +18,7 @@ you should be greeted with the following page:
 
 <p align="center"><kbd><img src="./misc/GUI_Fresh_Clone.jpg" width="80%"></kbd></p>
 
-For your onboarding,
-create a text file of the form `{yourname}.md` in the `people` folder that's at the root of the project.
+Create a text file of the form `{yourname}.md` in the `people` folder that's at the root of the project.
 Go ahead and introduce yourself here to your fellow engineers.
 Examples of things you can tell about yourself:
 
@@ -70,16 +69,18 @@ what a pull request is will be explained later,
 but for now,
 know that it is just a barrier for quality control.
 
-What we should be doing instead is not make commits on the `main` branch which has this rule,
-so we first undo our commit (this will not delete your work).
+To get around this,
+we first undo our commit that we just did.
+Don't worry, this will not delete your work.
 
 <p align="center"><kbd><img src="./misc/GUI_Undoing_Commit.jpg" width="80%"></kbd></p>
 
-Then make a new branch.
+We then make a new branch;
+this is where we'll put our commit instead.
 
 <p align="center"><kbd><img src="./misc/GUI_Creating_New_Branch.jpg" width="80%"></kbd></p>
 
-Give this branch a name;
+Give your new branch a name;
 what it is doesn't really matter just as long it's unique (e.g. `{yourname}-main`).
 
 <p align="center"><kbd><img src="./misc/GUI_Naming_New_Branch.jpg" width="80%"></kbd></p>
@@ -88,7 +89,7 @@ Select "Bring my changes to `{yournewbranch}`".
 
 <p align="center"><kbd><img src="./misc/GUI_How_New_Branch_Is_Used.jpg" width="80%"></kbd></p>
 
-You can now redo the commit and this time it'll be on the new branch.
+You can now redo the commit and this time it'll be on the new branch instead of the default `main` branch.
 
 <p align="center"><kbd><img src="./misc/GUI_On_New_Branch.jpg" width="80%"></kbd></p>
 
@@ -117,13 +118,14 @@ this file is only on the branch you made but not on the default `main` branch (y
 
 To get it be on the `main` branch,
 we perform a pull request.
-There are several ways to do this;
-one is to go to the "Pull requests" page of the RSX2026 repository.
+Go to the "Pull requests" page of the RSX2026 repository.
 
 <p align="center"><kbd><img src="./misc/GitHub_PR_Page.jpg" width="80%"></kbd></p>
 
 When making a new pull request,
-the difference between `main` and `{yournewbranch}` will be summarized with the commits you've made.
+the difference between two branches will be shown.
+Since we want to merge the branch you made into `main`,
+make sure to indicate so.
 
 <p align="center"><kbd><img src="./misc/GitHub_Creating_PR.jpg" width="80%"></kbd></p>
 
@@ -134,8 +136,9 @@ go ahead and give your pull request a title and, if needed, a detailed descripti
 
 Once you published your pull request,
 a thread is created where anyone can comment on it to create a discussion.
-Additional things to be done for the pull request to help better categorize it,
-like labels (e.g. "bug", "documentation", etc.) and assignees.
+Additional things to be done for the pull request to help better categorize it
+like labels (e.g. "bug", "documentation", etc.)
+and assignees (e.g. anyone who'd be responsible for answering questions on the thread).
 
 <p align="center"><kbd><img src="./misc/GitHub_Published_New_PR.jpg" width="80%"></kbd></p>
 
@@ -163,7 +166,7 @@ any of your fellow engineers can approve your pull request.
 
 Your reviewers might provide feedback
 (e.g. "The code doesn't seem to execute at the right timer event...",
-"Can you document somewhere the manufacturer number on the electronics box?").
+"Can you document somewhere the manufacturer number of the electronics box you used?").
 If all goes well,
 your reviewers will approve your commits and have them merged into `main`.
 
