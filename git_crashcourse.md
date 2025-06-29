@@ -1,5 +1,181 @@
 ***
 
+# Onboarding.
+
+First download the [GitHub Desktop GUI client](https://desktop.github.com/download/).
+Go through the installation process and create your GitHub account (if needed) and sign into the GUI with it.
+
+<p align="center"><kbd><img src="./misc/GUI_Lets_Get_Started.jpg" width="80%"></kbd></p>
+
+Next,
+clone the RSXVT2026 project using the [GitHub URL](https://github.com/RockSat-X/RSXVT2026/).
+
+<p align="center"><kbd><img src="./misc/GUI_Cloning_Repo.jpg" width="80%"></kbd></p>
+
+"Clone" is just Git-jargon for downloading a repository.
+After Git is done downloading,
+you should be greeted with the following page:
+
+<p align="center"><kbd><img src="./misc/GUI_Fresh_Clone.jpg" width="80%"></kbd></p>
+
+For your onboarding,
+create a text file of the form `{yourname}.md` in the `people` folder that's at the root of the project.
+Go ahead and introduce yourself here to your fellow engineers.
+Examples of things you can tell about yourself:
+
+- Name (and if it's typical that people mispronunce your name, help them out here).
+- Pets.
+- Spice tolerance.
+- Blood type.
+- Siblings.
+- Etc.
+
+When doing this,
+the GUI will detect that a new file was created.
+After you're done writing,
+go ahead and describe what you've done in the summary box.
+You can optionally go into more details with the description box.
+Once you feel ready,
+you can press the big blue "commit" button.
+
+<p align="center"><kbd><img src="./misc/GUI_New_Introduction.jpg" width="80%"></kbd></p>
+
+> [!CAUTION]
+> If you see a warning about not having write access,
+> then this means you are not currently added as a collaborator of the RSX2026 repository.
+> Contact a team lead to have you be added.
+> <p align="center"><kbd><img src="./misc/GUI_No_Write_Access.jpg" width="80%"></kbd></p>
+
+A "commit" is another bit of Git-jargon for a checkpoint in your work.
+Everything is still locally stored on your machine,
+however,
+so no one can see the new file you've created yet.
+To upload it to GitHub for others to have access,
+we "push" the commits.
+
+<p align="center"><kbd><img src="./misc/GUI_Commiting_Directly_On_Main.jpg" width="80%"></kbd></p>
+
+However,
+if you try to do so,
+you'll get an error message about how "changes must be made through a pull request".
+
+<p align="center"><kbd><img src="./misc/GUI_Need_To_Do_PR.jpg" width="80%"></kbd></p>
+
+This is intentional.
+The default branch of the repository,
+called `main`,
+is protected with the rule that no one can modify it
+willy-nilly without first creating a "pull request";
+what a pull request is will be explained later,
+but for now,
+know that it is just a barrier for quality control.
+
+What we should be doing instead is not make commits on the `main` branch which has this rule,
+so we first undo our commit (this will not delete your work).
+
+<p align="center"><kbd><img src="./misc/GUI_Undoing_Commit.jpg" width="80%"></kbd></p>
+
+Then make a new branch.
+
+<p align="center"><kbd><img src="./misc/GUI_Creating_New_Branch.jpg" width="80%"></kbd></p>
+
+Give this branch a name;
+what it is doesn't really matter just as long it's unique (e.g. `{yourname}-main`).
+
+<p align="center"><kbd><img src="./misc/GUI_Naming_New_Branch.jpg" width="80%"></kbd></p>
+
+Select "Bring my changes to `{yournewbranch}`".
+
+<p align="center"><kbd><img src="./misc/GUI_How_New_Branch_Is_Used.jpg" width="80%"></kbd></p>
+
+You can now redo the commit and this time it'll be on the new branch.
+
+<p align="center"><kbd><img src="./misc/GUI_On_New_Branch.jpg" width="80%"></kbd></p>
+
+Now you can finally upload your work online to GitHub;
+since you made a new branch,
+this is phrased as "publish branch",
+but otherwise,
+this is equivalent to the pushing operation we tried to do earlier.
+
+<p align="center"><kbd><img src="./misc/GUI_Publishing_New_Branch.jpg" width="80%"></kbd></p>
+
+This time,
+we shouldn't be getting any error about pull requests being required,
+since the newly created branch you made wouldn't have the rule that `main` does.
+
+You can see on GitHub
+(and so do other people)
+the introduction file you made.
+
+<p align="center"><kbd><img src="./misc/GitHub_Introduction_On_New_Branch.jpg" width="80%"></kbd></p>
+
+But remember,
+this file is only on the branch you made but not on the default `main` branch (yet).
+
+<p align="center"><kbd><img src="./misc/GitHub_No_Introduction_On_Main.jpg" width="80%"></kbd></p>
+
+To get it be on the `main` branch,
+we perform a pull request.
+There are several ways to do this;
+one is to go to the "Pull requests" page of the RSX2026 repository.
+
+<p align="center"><kbd><img src="./misc/GitHub_PR_Page.jpg" width="80%"></kbd></p>
+
+When making a new pull request,
+the difference between `main` and `{yournewbranch}` will be summarized with the commits you've made.
+
+<p align="center"><kbd><img src="./misc/GitHub_Creating_PR.jpg" width="80%"></kbd></p>
+
+Once you look over the changes and it all seems like what it should be,
+go ahead and give your pull request a title and, if needed, a detailed description.
+
+<p align="center"><kbd><img src="./misc/GitHub_Describing_PR.jpg" width="80%"></kbd></p>
+
+Once you published your pull request,
+a thread is created where anyone can comment on it to create a discussion.
+Additional things to be done for the pull request to help better categorize it,
+like labels (e.g. "bug", "documentation", etc.) and assignees.
+
+<p align="center"><kbd><img src="./misc/GitHub_Published_New_PR.jpg" width="80%"></kbd></p>
+
+The one you'd care most about are the reviewers you (or someone else) assign to the pull request.
+They'll be the person that can offically approve your pull request
+so your commits can be merged into the `main` branch of the RSX2026 repository.
+The reviewers will typically be your team lead,
+but need not be;
+any of your fellow engineers can approve your pull request.
+
+> [!CAUTION]
+> That being said,
+> you can also always sidestep the whole pull request procedure and merge directly into `main`. 
+>
+> <p align="center"><kbd><img src="./misc/GitHub_PR_Bypass.jpg" width="80%"></kbd></p>
+>
+> _**Do not do this unless you know what you are doing.**_
+>
+> Remember,
+> the whole point of having a rule to enforce pull requests on the `main` branch
+> is so your team leads can be kept-up-to-date with what has been done so far
+> and ensure quality control.
+> You don't want to be dealing with people's disorganized mess,
+> do you?
+
+Your reviewers might provide feedback
+(e.g. "The code doesn't seem to execute at the right timer event...",
+"Can you document somewhere the manufacturer number on the electronics box?").
+If all goes well,
+your reviewers will approve your commits and have them merged into `main`.
+
+<p align="center"><kbd><img src="./misc/GitHub_PR_Merged.jpg" width="80%"></kbd></p>
+
+The new branch you created can also be deleted if its whole purpose was for the work you just did,
+but you really don't need to do this.
+
+Your introduction file can be found in its expected location on the `main` branch now.
+
+<p align="center"><kbd><img src="./misc/GitHub_Introduction_On_Main_Branch.jpg" width="80%"></kbd></p>
+
 # Creating tickets.
 
 If you have questions about the project or things you'd like to see improved upon,
