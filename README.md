@@ -12,27 +12,34 @@
 # Action Items.
 
 - [ ] Design.
-  - [ ] Aluminium/plywood mock-up of deck plate and experiment.
-  - [ ] Design for easy access remove before flight (RBF) pins.
-  - [ ] Design for function indicators for power functions.
+  - [ ] Easy-access RBF inhibits.
+  - [ ] Debug interface.
+    - [ ] Power (e.g. GSE, TE-1, TE-2, etc.).
   - [ ] Main material list (one system of measurement).
-  - [ ] Full 3D printed payload.
-  - [ ] Desgin mechanial test beds for each main actuation.
+  - [ ] Mechanical test beds.
   - [ ] Finite element analysis.
+  - [ ] Consider how RF will be tested (GPS rollout)
 
 - [ ] Build.
+  - [ ] 3D printed plates for PCB solder stencils.
+  - [ ] Full 3D printed payload.
+  - [ ] Aluminium/plywood mock-up of deck plate and experiment.
   - [ ] Integration of function indicators (lights, buzzers, etc.).
-  - [ ] Install RBF inhibits and tags.
-  - [ ] Locktight/hotglue/secure fasteners.
+  - [ ] Stickers/tags/markings to indicate purpose for each inhibit.
+  - [ ] Locktight/hotglue/secure fasteners to prepare for vibe-testing.
 
 - [ ] Test.
   - [ ] Build test beds and run actuation testing.
   - [ ] Full sequence test.
+    - [ ] Lightning test (no GSE).
+  - [ ] GPS rollout.
   - [ ] Vibration test.
   - [ ] Summer testing preparations.
+    - [ ] Inventory sheet.
+    - [ ] Spreadsheet of fulltime of timer events, current draw, indicators, etc.
     - [ ] Full walk around inspection.
     - [ ] Procedures checksheets.
-    - [ ] Personel briefing.
+    - [ ] Personnel briefing.
 
 # Don't Track Junk Files.
 
