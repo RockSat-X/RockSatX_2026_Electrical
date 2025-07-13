@@ -42,6 +42,25 @@
     - [ ] Procedures checksheets.
     - [ ] Personnel briefing.
 
+# RockSat-X User Guide Summary
+
+As of writing, we will be referring to [August 31, 2023 (Rev - Draft)](https://www.nasa.gov/wp-content/uploads/2022/09/rocksat-x-user-guide-2024.pdf) version of the RockSat-X user guide.
+Here are some important things:
+
+  - The rocket is a *Terrier-Improved Orion* or *Terrier-Improved Malamute* designed to reach an altitude of 150-170km.[^rocket-model]
+  - The rocket has a CarRoLL[^CarRoLL] structure which holds up to 5 full experiments, one of which we will occupy.
+  - Each full experiment is provided with four timer-event powerlines (TEs) of our choosing.
+  - Each full experiment is provided with two Ground Support Equipment powerlines (GSEs) which are activated prior to launch.
+  - The experiment should be primarily activated by the GSEs but any deployment actions should only be done using TEs.
+  - Each full experiment is only provided 1Ah of battery charge.
+  - Telemetry:
+    - Ten 5V 10-bit ADCs.
+    - One 19200 baud UART.
+    - 16-bit parallel interface.
+
+[^rocket-model]: ``(@/pg 12/sec 3.1/`RSX`)``.
+[^CarRoLL]:      "Carrier of Rocket Learning Laboratories" ``(@/pg 10/sec 2.0/`RSX`)``.
+
 # Don't Track Junk Files.
 
 When you add files for Git to track,
