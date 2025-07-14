@@ -149,7 +149,7 @@ Here are some important things to consider:
 > Bullets marked with :small_red_triangle:
 > are to be checked off as :small_blue_diamond:
 > once we have verified our experiment implementation satisfies or doesn't conflict with it.
-> This should be done when minimal hardware changes to be made.
+> This should be done when minimal hardware changes are to be made.
 
 # Don't Track Junk Files.
 
