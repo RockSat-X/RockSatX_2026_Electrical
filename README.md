@@ -1,11 +1,6 @@
 # Virginia Tech RockSat-X 2026 Project.
 
-- [Action Items](#action-items).
-- [RockSat-X User Guide Summary](#rocksat-x-user-guide-summary).
-- Git Workflow.
-  - [Git Conflicts](#git-conflicts).
-
-# Action Items.
+## Action Items.
 
 - [ ] Onboarding.
     - [ ] All members in the RockSat-X program must be a "U.S. Person".[^us-persons]
@@ -78,7 +73,7 @@
 - [ ] May.
   - [ ] (**est. 28th?**) Visual Verification Check-in (VVC).
 
-# RockSat-X User Guide Summary.
+## RockSat-X User Guide Summary.
 
 As of writing, we will be referring to [August 31, 2023 (Rev - Draft)](https://www.nasa.gov/wp-content/uploads/2022/09/rocksat-x-user-guide-2024.pdf) version of the RockSat-X user guide.
 Here are some important things to consider:
@@ -144,35 +139,3 @@ Here are some important things to consider:
 > are to be checked off as :small_blue_diamond:
 > once we have verified our experiment implementation satisfies or doesn't conflict with it.
 > This should be done when minimal hardware changes are to be made.
-
-# Git Conflicts.
-
-As you work,
-you might encounter certain conflicts with other people's work.
-This will happen whenever you make several commits on a branch
-and so does another person independently.
-As a result,
-there ends up being a "divergence" between you two.
-
-One of you will push their commits to GitHub first,
-and as a result,
-the other person will be the one that has an out-of-date repository.
-
-If the files that were changed by the two of you are completely independent,
-then this is often pretty easy to fix;
-it is just a simple merge.
-
-But if the two of you modified the same file
-(e.g. edited the same code or tweaked the same CAD model)
-then the situtation is a bit trickier.
-
-If this situation describes you,
-feel free to create a [ticket](#creating-tickets) to see how we can resolve it.
-I'd put in time to explain how to do it here,
-but there's a lot of things to look out for,
-and besides there's plenty of resources online.
-
-> [!TIP]
-> The usage of AI in this scenario is probably good,
-> since Git version control is littered with lots of weird technical terms and edge cases.
-> Maybe try out GitHub's Copilot?
