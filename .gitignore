@@ -13,3 +13,11 @@ data/
 _autosave-*.kicad_pcb
 fp-info-cache
 \#auto_saved_files\#
+
+# STM32CubeIDE.
+Debug/
+.metadata/
+.project
+.cproject
+.mxproject
+.settings
