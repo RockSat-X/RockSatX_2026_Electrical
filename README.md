@@ -233,47 +233,6 @@ this means when they perform a fetch on the repository,
 they'll be forced to download all your chunky files.
 Don't waste their time and storage if you can.
 
-# Creating Tickets.
-
-If you have questions about the project or things you'd like to see improved upon,
-it's best to create a ticket on GitHub.
-This is done through the "Issues" tab on the page of the RSX2026 repository.
-
-<p align="center"><kbd><img src="./misc/GitHub_Issue_Page.jpg" width="80%"></kbd></p>
-
-Give a summary of your ticket in the title field
-and expand it further (if needed) in the description box.
-
-<p align="center"><kbd><img src="./misc/GitHub_Making_Issue.jpg" width="80%"></kbd></p>
-
-A thread will be created where anyone can contribute to the discussion.
-The ticket can be assigned people and labels to better help categorize it.
-
-<p align="center"><kbd><img src="./misc/GitHub_Issue_Thread.jpg" width="80%"></kbd></p>
-
-When you feel like you got the answer you wanted,
-you can close the ticket;
-if needed,
-the ticket can always be reopened later on.
-
-<p align="center"><kbd><img src="./misc/GitHub_Closed_Issue.jpg" width="80%"></kbd></p>
-
-You'll be able to see the tickets you've made and anyone else's for future prosperity 
-on the issue page of the base repository.
-
-<p align="center"><kbd><img src="./misc/GitHub_Issue_List.jpg" width="80%"></kbd></p>
-
-That's pretty much the gist of using issues on GitHub.
-
-> [!TIP]
-> Discord is best reserved for virtual meetings or miscellaneous conversations.
-> If you want the quickest response time,
-> use Discord,
-> but for the sake of bookkeeping,
-> create a ticket on GitHub whenever possible.
-> Over time,
-> the issue tab will serve as a great reference to look back upon for your fellow engineers.
-
 # Git Conflicts.
 
 As you work,
