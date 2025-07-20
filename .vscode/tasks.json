@@ -30,8 +30,7 @@
 
 //////////////////////////////////////////////////////////////// Notes ////////////////////////////////////////////////////////////////
 
-// @/`problemMatcher`:
-// @/on 2025-july-20/by:`Phuc Doan`.
+// @/by Phuc Doan/on 2025-july-20/`problemMatcher`:
 // @/url:`https://stackoverflow.com/a/54017304`.
 //
 // Visual Studio Code is absolute dogwater in that it forces you to define a problem-matcher for tasks that
