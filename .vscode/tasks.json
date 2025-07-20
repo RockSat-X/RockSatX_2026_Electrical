@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label"          : "Make a GDB Server",
+            "type"           : "shell",
+            "command"        : ["./cli.py"],
+            "args"           : ["load"],
+            "isBackground"   : true,
+            "problemMatcher" : [ // @/`problemMatcher`.
+                {
+                    "pattern": [
+                        {
+                            "regexp"   : ".",
+                            "file"     : 1,
+                            "location" : 2,
+                            "message"  : 3,
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart" : true,
+                        "beginsPattern" : ".",
+                        "endsPattern"   : ".",
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+//////////////////////////////////////////////////////////////// Notes ////////////////////////////////////////////////////////////////
+
+// @/`problemMatcher`:
+// @/on 2025-july-20/by:`Phuc Doan`.
+// @/url:`https://stackoverflow.com/a/54017304`.
+//
+// Visual Studio Code is absolute dogwater in that it forces you to define a problem-matcher for tasks that
+// run in the background (so it can find error messages and such in the output, I guess) even if you don't need it.
+// If we don't define one, then either a pop-up will appear where VSC complains about this or the start of the
+// debug session is delayed by ~5 seconds unnecessarily.
+// I've tried null, [], and "", but to actually get around this, a dummy problem-matcher is needed.
+// I doubt this is the best solution, but right now it works.

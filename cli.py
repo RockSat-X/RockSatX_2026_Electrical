@@ -83,13 +83,16 @@ def execute(
 
         return exit_code
 
-execute( # @/`Useless "ap" flag`.
-    f'''
-        STM32_Programmer_CLI
-            --connect port=SWD
-            --download ./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin 0x08000000
-            --verify
-            --start
-    ''',
-    nonzero_exit_code_ok = True
-)
+#execute( # @/`Useless "ap" flag`.
+#    f'''
+#        STM32_Programmer_CLI
+#            --connect port=SWD
+#            --download ./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin 0x08000000
+#            --verify
+#            --start
+#    ''',
+#    nonzero_exit_code_ok = True
+#)
+execute('''
+    ST-LINK_gdbserver -cp /opt/st/stm32cubeclt_1.16.0/STM32CubeProgrammer/bin --swd --apid 1 --verify --attach
+''')
