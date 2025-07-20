@@ -2,16 +2,55 @@
     "version"        : "0.2.0",
     "configurations" : [
         {
-            "name"                    : "ST-LINK Launch",
+            "name"                    : "ST-LINK: Reflash firmware and stop at first instruction.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
-            "overrideLaunchCommands"  : ["load"],
-            "servertype"              : "external",          // We'll use the cli.py script to call ST-LINK_gdbserver to create the external GDB-server.
+            "servertype"              : "external",          // @/`External GDB-Server`.
             "preLaunchTask"           : "Make a GDB Server", // "
-            "gdbTarget"               : "localhost:61234",   // This is the default port made by ST-LINK_gdbserver.
-            "overrideRestartCommands" : ["monitor reset"],   // Cortex-Debug uses "monitor reset halt" by default, but ST-LINK_gdbserver won't recognize this.
+            "gdbTarget"               : "localhost:61234",   // "
+            "overrideRestartCommands" : ["monitor reset"],   // "
+            "overrideLaunchCommands"  : ["load"],            // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
             "breakAfterReset"         : true,
         },
+        {
+            "name"                    : "ST-LINK: Reflash firmware and stop at main.",
+            "type"                    : "cortex-debug",
+            "request"                 : "launch",
+            "servertype"              : "external",          // @/`External GDB-Server`.
+            "preLaunchTask"           : "Make a GDB Server", // "
+            "gdbTarget"               : "localhost:61234",   // "
+            "overrideRestartCommands" : ["monitor reset"],   // "
+            "overrideLaunchCommands"  : ["load"],            // "
+            "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
+            "runToEntryPoint"         : "main",
+        },
+        {
+            "name"                    : "ST-LINK: Halt firmware.",
+            "type"                    : "cortex-debug",
+            "request"                 : "attach",
+            "servertype"              : "external",          // @/`External GDB-Server`.
+            "preLaunchTask"           : "Make a GDB Server", // "
+            "gdbTarget"               : "localhost:61234",   // "
+            "overrideRestartCommands" : ["monitor reset"],   // "
+            "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
+        },
     ],
 }
+
+//////////////////////////////////////////////////////////////// Notes ////////////////////////////////////////////////////////////////
+
+// @/by Phuc Doan/on 2025-july-20/`External GDB-Server`:
+//
+// We use the cli.py script to create the GDB-server via ST-LINK_gdbserver
+// to which Visual Studio Code can use GDB to attach and debug the firmware.
+// While the entire debugging setup can be done entirely within VSC and
+// with the Cortex-Debug extension, this creates a unnecessary dependency on
+// having to use VSC itself.
+//
+// Some notes:
+//
+//     - By default, ST-LINK_gdbserver creates a port of "localhost:61234".
+//
+//     - By default, Cortex-Debug uses the command "monitor reset halt" to do a reset,
+//       but ST-LINK_gdbserver doesn't recognize this, but "monitor reset" seems to work.
