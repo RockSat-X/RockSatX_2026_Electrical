@@ -46,6 +46,12 @@
                 },
             ],
         },
+        {
+            "label"        : "Build the firmware and make a GDB-server.",
+            "dependsOn"    : ["Build the firmware.", "Make a GDB-server."],
+            "dependsOrder" : "sequence",
+            "hide"         : true,
+        },
     ]
 }
 

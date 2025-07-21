@@ -2,31 +2,31 @@
     "version"        : "0.2.0",
     "configurations" : [
         {
-            "name"                    : "ST-LINK: Reflash firmware and stop at first instruction.",
+            "name"                    : "ST-LINK: Build and flash firmware and stop at first instruction.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
-            "servertype"              : "external",           // @/`External GDB-Server`.
-            "preLaunchTask"           : "Make a GDB-server.", // "
-            "gdbTarget"               : "localhost:61234",    // "
-            "overrideRestartCommands" : ["monitor reset"],    // "
-            "overrideLaunchCommands"  : ["load"],             // "
+            "servertype"              : "external",                                  // @/`External GDB-Server`.
+            "preLaunchTask"           : "Build the firmware and make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",                           // "
+            "overrideRestartCommands" : ["monitor reset"],                           // "
+            "overrideLaunchCommands"  : ["load"],                                    // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
             "breakAfterReset"         : true,
         },
         {
-            "name"                    : "ST-LINK: Reflash firmware and stop at main.",
+            "name"                    : "ST-LINK: Build and flash firmware and stop at main.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
-            "servertype"              : "external",           // @/`External GDB-Server`.
-            "preLaunchTask"           : "Make a GDB-server.", // "
-            "gdbTarget"               : "localhost:61234",    // "
-            "overrideRestartCommands" : ["monitor reset"],    // "
-            "overrideLaunchCommands"  : ["load"],             // "
+            "servertype"              : "external",                                  // @/`External GDB-Server`.
+            "preLaunchTask"           : "Build the firmware and make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",                           // "
+            "overrideRestartCommands" : ["monitor reset"],                           // "
+            "overrideLaunchCommands"  : ["load"],                                    // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
             "runToEntryPoint"         : "main",
         },
         {
-            "name"                    : "ST-LINK: Halt firmware.",
+            "name"                    : "ST-LINK: Halt firmware and attach debugger.",
             "type"                    : "cortex-debug",
             "request"                 : "attach",
             "servertype"              : "external",           // @/`External GDB-Server`.
@@ -40,7 +40,7 @@
 
 //////////////////////////////////////////////////////////////// Notes ////////////////////////////////////////////////////////////////
 
-// @/by Phuc Doan/on 2025-july-20/`External GDB-Server`:
+// @/by Phuc Doan/on 2025-july-21/`External GDB-Server`:
 //
 // We use the cli.py script to create the GDB-server via ST-LINK_gdbserver
 // to which Visual Studio Code can use GDB to attach and debug the firmware.
@@ -54,3 +54,12 @@
 //
 //     - By default, Cortex-Debug uses the command "monitor reset halt" to do a reset,
 //       but ST-LINK_gdbserver doesn't recognize this, but "monitor reset" seems to work.
+//
+//     - When launching, we reflash the firmware onto the microcontroller when the
+//       GDB session starts. There is a small chance, however, that the reflashing
+//       can fail, to which the solution is simply to just try again.
+//       We could try to rebuild and reflash the firmware *before* starting the GDB
+//       session, but then the MCU will be running some of the code before GDB can attach.
+//       Perhaps a solution to this is somehow make STM32_Programmer_CLI halt the core
+//       after flashing the new firmware, but I've spent 5-10 minutes trying to do this
+//       and nothing seems to work, but I could just be missing something small.
