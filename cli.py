@@ -351,10 +351,10 @@ def clean():
     for directory in directories:
         execute(
             bash = f'''
-                rm -rf {directory}
+                rm -rf {repr(str(directory))})
             ''',
             cmd = f'''
-                if exist {directory} rmdir /S /Q {directory}
+                if exist {repr(str(directory))} rmdir /S /Q "{repr(str(directory))}
             ''',
         )
 
@@ -372,7 +372,7 @@ def build():
     )
 
     execute(f'''
-        make -C {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile')}
+        make -C {repr(str(root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile')))}
     ''')
 
 
@@ -404,7 +404,7 @@ def flash():
         exit_code = execute(f'''
             STM32_Programmer_CLI
                 --connect port=SWD index={stlink.probe_index}
-                --download {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin')} 0x08000000
+                --download {repr(str(root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin')))} 0x08000000
                 --verify
                 --start
         ''', nonzero_exit_code_ok = True)
@@ -430,7 +430,7 @@ def debug(
     if just_gdbserver: # This is mainly used for Visual Studio Code debugging.
         execute(f'''
             ST-LINK_gdbserver
-                --stm32cubeprogrammer-path {pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent}
+                --stm32cubeprogrammer-path {repr(str(pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent))}
                 --swd
                 --apid 1
                 --verify
