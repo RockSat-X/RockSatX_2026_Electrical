@@ -2,6 +2,18 @@
     "version"        : "0.2.0",
     "configurations" : [
         {
+            "name"                    : "ST-LINK: Build and flash firmware.",
+            "type"                    : "cortex-debug",
+            "request"                 : "launch",
+            "servertype"              : "external",                                  // @/`External GDB-Server`.
+            "preLaunchTask"           : "Build the firmware and make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",                           // "
+            "overrideRestartCommands" : ["monitor reset"],                           // "
+            "overrideLaunchCommands"  : ["load"],                                    // "
+            "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
+            "breakAfterReset"         : false,
+        },
+        {
             "name"                    : "ST-LINK: Build and flash firmware and stop at first instruction.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
