@@ -5,11 +5,11 @@
             "name"                    : "ST-LINK: Reflash firmware and stop at first instruction.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
-            "servertype"              : "external",          // @/`External GDB-Server`.
-            "preLaunchTask"           : "Make a GDB Server", // "
-            "gdbTarget"               : "localhost:61234",   // "
-            "overrideRestartCommands" : ["monitor reset"],   // "
-            "overrideLaunchCommands"  : ["load"],            // "
+            "servertype"              : "external",           // @/`External GDB-Server`.
+            "preLaunchTask"           : "Make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",    // "
+            "overrideRestartCommands" : ["monitor reset"],    // "
+            "overrideLaunchCommands"  : ["load"],             // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
             "breakAfterReset"         : true,
         },
@@ -17,11 +17,11 @@
             "name"                    : "ST-LINK: Reflash firmware and stop at main.",
             "type"                    : "cortex-debug",
             "request"                 : "launch",
-            "servertype"              : "external",          // @/`External GDB-Server`.
-            "preLaunchTask"           : "Make a GDB Server", // "
-            "gdbTarget"               : "localhost:61234",   // "
-            "overrideRestartCommands" : ["monitor reset"],   // "
-            "overrideLaunchCommands"  : ["load"],            // "
+            "servertype"              : "external",           // @/`External GDB-Server`.
+            "preLaunchTask"           : "Make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",    // "
+            "overrideRestartCommands" : ["monitor reset"],    // "
+            "overrideLaunchCommands"  : ["load"],             // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
             "runToEntryPoint"         : "main",
         },
@@ -29,10 +29,10 @@
             "name"                    : "ST-LINK: Halt firmware.",
             "type"                    : "cortex-debug",
             "request"                 : "attach",
-            "servertype"              : "external",          // @/`External GDB-Server`.
-            "preLaunchTask"           : "Make a GDB Server", // "
-            "gdbTarget"               : "localhost:61234",   // "
-            "overrideRestartCommands" : ["monitor reset"],   // "
+            "servertype"              : "external",           // @/`External GDB-Server`.
+            "preLaunchTask"           : "Make a GDB-server.", // "
+            "gdbTarget"               : "localhost:61234",    // "
+            "overrideRestartCommands" : ["monitor reset"],    // "
             "executable"              : "./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.elf",
         },
     ],
