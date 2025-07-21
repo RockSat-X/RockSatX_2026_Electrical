@@ -250,7 +250,7 @@ def execute(
 
         case 'win32':
             use_powershell = cmd is None
-            instructions   = pwsh if use_powershell else cmd
+            instructions   = powershell if use_powershell else cmd
 
         case _:
             instructions   = bash
