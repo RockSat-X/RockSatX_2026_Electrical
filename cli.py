@@ -4,7 +4,7 @@
 
 
 
-import sys, shlex, pathlib, shutil, subprocess, time
+import types, sys, shlex, pathlib, shutil, subprocess, time
 
 try:
     import deps.pxd.ui
@@ -17,6 +17,21 @@ except ModuleNotFoundError as error:
     print(f'        > git submodule update --init --recursive')
     print(f'        If this still doesn\'t work, please raise an issue or patch the script yourself.')
     sys.exit(1)
+
+
+
+def import_pyserial():
+
+    try:
+        import serial
+        import serial.tools.list_ports
+    except ModuleNotFoundError as error:
+        with log(ansi = 'fg_red'):
+            log(f'[ERROR] Python got {type(error).__name__} ({error}); try doing:')
+            log(f'        > pip install pyserial', ansi = 'bold')
+        sys.exit(1)
+
+    return serial, serial.tools.list_ports
 
 
 
@@ -105,6 +120,110 @@ def require(*needed_programs):
 
 
 ################################################################ Helpers ################################################################
+
+
+
+def log_stlinks(stlinks):
+
+    header, rows = ljusts(({
+        'Probe Index'   : stlink.probe_index,
+        'Board Name'    : stlink.board_name,
+        'Device'        : stlink.comport.device,
+        'Description'   : stlink.comport.description,
+        'Serial Number' : stlink.serial_number,
+    } for stlink in stlinks), include_keys = True)
+
+    log(f'| {' | '.join(header)} |')
+    for row in rows:
+        log(f'| {' | '.join(row.values())} |')
+
+
+
+def request_stlinks(
+    *,
+    specific_one              = False,
+    specific_probe_index      = None,
+    flag_to_use_when_multiple = None,
+):
+
+    #
+    # Parse output of STM32_Programmer_CLI's findings.
+    #
+
+    require('STM32_Programmer_CLI')
+
+    listing_lines = subprocess.check_output(['STM32_Programmer_CLI', '-l', 'st-link']).decode('utf-8').splitlines()
+    stlinks       = [
+        types.SimpleNamespace(
+            probe_index        = int(listing_lines[i + 0].removeprefix(prefix).removesuffix(':')),
+            serial_number      =     listing_lines[i + 1].split(':')[1].strip(),
+            firmware           =     listing_lines[i + 2].split(':')[1].strip(),
+            access_port_number = int(listing_lines[i + 3].split(':')[1].strip()),
+            board_name         =     listing_lines[i + 4].split(':')[1].strip(),
+        )
+        for i in range(len(listing_lines))
+        if listing_lines[i].startswith(prefix := 'ST-Link Probe ')
+    ]
+
+    #
+    # Find each ST-Link's corresponding serial port.
+    #
+
+    serial, list_ports = import_pyserial()
+
+    comports = list_ports.comports()
+
+    for stlink in stlinks:
+        stlink.comport, = [comport for comport in comports if comport.serial_number == stlink.serial_number]
+
+    #
+    # If a specific probe index was given, give back that specific ST-Link.
+    #
+
+    if specific_probe_index is not None:
+
+        if not stlinks:
+            log(f'[ERROR] No ST-Links found.', ansi = 'fg_red')
+            sys.exit(1)
+
+        if not (matches := [stlink for stlink in stlinks if stlink.probe_index == specific_probe_index]):
+            log_stlinks(stlinks)
+            log()
+            log(f'[ERROR] No ST-Links found with probe index of "{specific_probe_index}".', ansi = 'fg_red')
+            sys.exit(1)
+
+        stlink, = matches
+
+        return stlink
+
+    #
+    # If the caller is assuming there's only one ST-Link, then give back the only one.
+    #
+
+    if specific_one:
+
+        if not stlinks:
+            log(f'[ERROR] No ST-Links found.', ansi = 'fg_red')
+            sys.exit(1)
+
+        if len(stlinks) >= 2:
+            log_stlinks(stlinks)
+            log()
+            if flag_to_use_when_multiple is None:
+                log(f'[ERROR] Multiple ST-Links found; I don\'t know which one to use.', ansi = 'fg_red')
+            else:
+                log(f'[ERROR] Multiple ST-Links found; specify which one to use with "{flag_to_use_when_multiple}".', ansi = 'fg_red')
+            sys.exit(1)
+
+        stlink, = stlinks
+
+        return stlink
+
+    #
+    # Otherwise, give back the list of the ST-Links we found (if any).
+    #
+
+    return stlinks
 
 
 
@@ -242,14 +361,59 @@ def clean():
 
 
 @ui('Compile and generate the binary for flashing.')
-def build(
-):
+def build():
 
     require('make')
+
+    require(
+        'arm-none-eabi-gcc',
+        'arm-none-eabi-cpp',
+        'arm-none-eabi-objcopy',
+    )
 
     execute(f'''
         make -C {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile')}
     ''')
+
+
+
+@ui('Flash the binary to the MCU.')
+def flash():
+
+    require('STM32_Programmer_CLI')
+
+    stlink = request_stlinks(specific_one = True)
+
+    attempts = 0
+
+    while True:
+
+        # Maxed out attempts?
+        if attempts == 3:
+            log()
+            log('[ERROR] Failed to flash (maybe due to ST-Link not being connected or that it\'s busy).', ansi = 'fg_red')
+            sys.exit(1)
+
+        # Not the first try?
+        elif attempts:
+            log()
+            log('[WARNING] Failed to flash (maybe due to verification error); trying again...', ansi = 'fg_yellow')
+            log()
+
+        # Try flashing.
+        exit_code = execute(f'''
+            STM32_Programmer_CLI
+                --connect port=SWD index={stlink.probe_index}
+                --download {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin')} 0x08000000
+                --verify
+                --start
+        ''', nonzero_exit_code_ok = True)
+
+        # Try again if needed.
+        if exit_code:
+            attempts += 1
+        else:
+            break
 
 
 
@@ -272,6 +436,15 @@ def debug(
                 --verify
                 --attach
         ''', keyboard_interrupt_ok = True)
+
+
+
+@ui('Search and list for any ST-Links connected to the computer.', name = 'stlinks')
+def _():
+    if stlinks := request_stlinks():
+        log_stlinks(stlinks)
+    else:
+        log('No ST-Link detected by STM32_Programmer_CLI.')
 
 
 
