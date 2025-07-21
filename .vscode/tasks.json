@@ -1,14 +1,23 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        { // @/`Deferring Task`.
+    "version" : "2.0.0",
+    "tasks"   : [
+        {
+            "label"   : "Build the firmware", // Use CTRL-SHIFT-B to build.
+            "command" : "./cli.py",
+            "args"    : ["build"],
+            "group"   : {
+                "kind"      : "build",
+                "isDefault" : true,
+            },
+        },
+        { // @/`Deferred Task`.
             "label"     : "Make a GDB Server",
-            "dependsOn" : ["Make a GDB Server (Deferred)"]
+            "dependsOn" : ["Make a GDB Server (Deferred)"],
         },
         {
             "label"          : "Make a GDB Server (Deferred)",
             "type"           : "shell",
-            "command"        : ["./cli.py"],
+            "command"        : "./cli.py",
             "args"           : ["debug", "--just-gdbserver"],
             "isBackground"   : true,
             "problemMatcher" : [ // @/`problemMatcher`.
@@ -19,15 +28,15 @@
                             "file"     : 1,
                             "location" : 2,
                             "message"  : 3,
-                        }
+                        },
                     ],
                     "background": {
                         "activeOnStart" : true,
                         "beginsPattern" : ".",
                         "endsPattern"   : ".",
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         },
     ]
 }
