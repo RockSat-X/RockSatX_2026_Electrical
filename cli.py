@@ -1,6 +1,28 @@
 #! /usr/bin/env python3
 
-import re, os, sys, types, shlex, shutil, pathlib, subprocess, collections, inspect, io, builtins, itertools, math, time, string, zlib
+################################################################ Dependencies ################################################################
+
+
+
+import sys, shlex, pathlib, shutil, subprocess, time
+
+try:
+    import deps.pxd.ui
+    import deps.pxd.metapreprocessor
+    import deps.pxd.cite
+    from deps.pxd.log   import log
+    from deps.pxd.utils import *
+except ModuleNotFoundError as err:
+    print(f'[ERROR] Could not import "{err.name}"; maybe the Git submodules need to be initialized/updated? Try doing:')
+    print(f'        > git submodule update --init --recursive')
+    print(f'        If this still doesn\'t work, please raise an issue or patch the script yourself.')
+    sys.exit(1)
+
+
+
+################################################################ Helpers ################################################################
+
+
 
 def execute(
     dflt                  = None, *,
@@ -83,16 +105,47 @@ def execute(
 
         return exit_code
 
-#execute( # @/`Useless "ap" flag`.
-#    f'''
-#        STM32_Programmer_CLI
-#            --connect port=SWD
-#            --download ./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin 0x08000000
-#            --verify
-#            --start
-#    ''',
-#    nonzero_exit_code_ok = True
-#)
-execute('''
-    ST-LINK_gdbserver -cp /opt/st/stm32cubeclt_1.16.0/STM32CubeProgrammer/bin --swd --apid 1 --verify --attach
-''')
+
+
+################################################################ CLI Commands ################################################################
+
+
+
+def ui_hook(subcmd_name):
+
+    start = time.time()
+    yield
+    end = time.time()
+
+    if (elapsed := end - start) >= 0.5:
+        log()
+        log(f'> "{subcmd_name}" took: {elapsed :.3f}s')
+
+
+
+ui = deps.pxd.ui.UI(
+    f'{root(pathlib.Path(__file__).name)}',
+    f'Clippy the command line program.',
+    ui_hook,
+)
+
+
+
+@ui('Set up a debugging session.')
+def debug(
+    just_gdbserver : (bool, 'Just set up the GDB-server and nothing else.') = False
+):
+
+    if just_gdbserver: # This is mainly used for Visual Studio Code debugging.
+        execute(f'''
+            ST-LINK_gdbserver
+                --stm32cubeprogrammer-path {pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent}
+                --swd
+                --apid 1
+                --verify
+                --attach
+        ''', keyboard_interrupt_ok = True)
+
+
+
+exit(ui.invoke(sys.argv[1:]))

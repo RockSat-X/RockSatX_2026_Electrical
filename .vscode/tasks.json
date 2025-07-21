@@ -9,7 +9,7 @@
             "label"          : "Make a GDB Server (Deferred)",
             "type"           : "shell",
             "command"        : ["./cli.py"],
-            "args"           : ["load"],
+            "args"           : ["debug", "--just-gdbserver"],
             "isBackground"   : true,
             "problemMatcher" : [ // @/`problemMatcher`.
                 {
