@@ -84,6 +84,15 @@ def require(*needed_programs):
             log(f'        Otherwise, you should only be getting this message on some other Linux distribution, ')
             log(f'        to which I have faith in you to figure this out on your own.')
 
+    # Make.
+    elif missing_program in (roster := [
+        'make'
+    ]):
+        with log(ansi = 'fg_red'):
+            log(f'[ERROR] Python couldn\'t find "{missing_program}" in your PATH; have you installed it yet?')
+            log(f'        If you\'re on a Windows system, run the following command and restart your shell:')
+            log(f'        > winget install ezwinports.make', ansi = 'bold')
+
     # Not implemented.
     else:
         raise RuntimeError(
@@ -209,10 +218,50 @@ ui = deps.pxd.ui.UI(
 
 
 
+@ui(f'Delete all build artifacts.')
+def clean():
+
+    # @/on 2025-july-21/by:`Phuc Doan`.
+    # We could also call "make clean" to do some of the cleaning,
+    # but I've encountered a bug in ST's Makefile where it doesn't actually do it properly. :/
+
+    directories = root('''
+        ./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build
+    ''')
+
+    for directory in directories:
+        execute(
+            bash = f'''
+                rm -rf {directory}
+            ''',
+            cmd = f'''
+                if exist {directory} rmdir /S /Q {directory}
+            ''',
+        )
+
+
+
+@ui('Compile and generate the binary for flashing.')
+def build(
+):
+
+    require('make')
+
+    execute(f'''
+        make -C {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile')}
+    ''')
+
+
+
 @ui('Set up a debugging session.')
 def debug(
     just_gdbserver : (bool, 'Just set up the GDB-server and nothing else.') = False
 ):
+
+    require(
+        'ST-LINK_gdbserver',
+        'STM32_Programmer_CLI',
+    )
 
     if just_gdbserver: # This is mainly used for Visual Studio Code debugging.
         execute(f'''
