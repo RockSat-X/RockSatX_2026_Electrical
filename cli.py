@@ -18,6 +18,7 @@ except ModuleNotFoundError as error:
     print(f'        If this still doesn\'t work, please raise an issue or patch the script yourself.')
     sys.exit(1)
 
+from electrical.src.Common import TARGET, TARGETS
 
 
 def import_pyserial():
@@ -340,12 +341,8 @@ ui = deps.pxd.ui.UI(
 @ui(f'Delete all build artifacts.')
 def clean():
 
-    # @/on 2025-july-21/by:`Phuc Doan`.
-    # We could also call "make clean" to do some of the cleaning,
-    # but I've encountered a bug in ST's Makefile where it doesn't actually do it properly. :/
-
     directories = root('''
-        ./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build
+        ./electrical/build
     ''')
 
     for directory in directories:
@@ -361,19 +358,161 @@ def clean():
 
 
 @ui('Compile and generate the binary for flashing.')
-def build():
+def build(
+    specific_target_name : ([target.name for target in TARGETS], 'Target program to build; otherwise, build entire project.'         ) = None,
+    metapreprocess_only  : (bool                               , 'Only execute the Meta-Preprocessor; no compiling and linking done.') = False
+):
 
-    require('make')
+    if specific_target_name is None:
+        targets = TARGETS
+    else:
+        targets = [TARGET(specific_target_name)]
+
+    def log_header(header):
+        log()
+        log(f'{'>' * 32} {header} {'<' * 32}', ansi = ('bold', 'fg_bright_black'))
+        log()
+
+    #
+    # Begin meta-preprocessing!
+    #
+
+    log_header('Meta-Preprocessing')
+
+    metapreprocessor_file_paths = [
+        pathlib.Path(root, file_name)
+        for root, dirs, file_names in root('./electrical/src').walk()
+        for file_name in file_names
+        if file_name.endswith(('.c', '.h', '.py', '.ld', '.S'))
+    ]
+
+    metapreprocessing_elapsed = 0
+
+    def metadirective_callback(info):
+
+        nonlocal metapreprocessing_elapsed
+
+        export_report = ''
+
+        for symbol in info.exports:
+
+            export_report += ', ' if export_report else ' '
+
+            if len(export_report) + len(symbol) < 64:
+                export_report += symbol
+            else:
+                export_report += '...'
+                break
+
+        source_file_path_just   = max(len(str(meta_directive.source_file_path  )) for meta_directive in info.meta_directives)
+        header_line_number_just = max(len(str(meta_directive.header_line_number)) for meta_directive in info.meta_directives)
+        index_just              =     len(str(len(info.meta_directives)))
+
+        log(
+            f'| {str(info.index + 1).rjust(index_just)}/{len(info.meta_directives)} '
+            f'| {info.source_file_path.ljust(source_file_path_just)} '
+            f': {str(info.header_line_number).ljust(header_line_number_just)} '
+            f'|{export_report}'
+        )
+
+        start  = time.time()
+        output = yield
+        end    = time.time()
+
+        if (elapsed := end - start) > 0.050:
+            log(f'#    ^ {elapsed :.3}s')
+
+        metapreprocessing_elapsed += elapsed
+
+    try:
+        deps.pxd.metapreprocessor.do(
+            output_dir_path   = root('./electrical/build/meta/'),
+            source_file_paths = metapreprocessor_file_paths,
+            callback          = metadirective_callback,
+        )
+    except deps.pxd.metapreprocessor.MetaError as err:
+        sys.exit(str(err) if err.args else 1)
+
+    log()
+    log(f'# Meta-Preprocessor : {float(metapreprocessing_elapsed) :.3}s.', ansi = 'fg_magenta')
+
+    if metapreprocess_only:
+        return
+
+    #
+    # Compile each source.
+    #
 
     require(
         'arm-none-eabi-gcc',
         'arm-none-eabi-cpp',
         'arm-none-eabi-objcopy',
+        'arm-none-eabi-gdb',
     )
 
-    execute(f'''
-        make -C {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile')}
-    ''')
+    for target in targets:
+
+        log_header(f'Compiling "{target.name}"')
+
+        for src in target.srcs:
+            obj = root('./electrical/build', target.name, src.stem + '.o')
+            obj.parent.mkdir(parents=True, exist_ok=True)
+            execute(f'''
+                arm-none-eabi-gcc
+                    -o {obj}
+                    -c {src}
+                    {target.compiler_flags}
+            ''')
+
+    for target in targets:
+
+        log_header(f'Linking "{target.name}"')
+
+        #
+        # Preprocess the linker file.
+        #
+
+        execute(f'''
+            arm-none-eabi-cpp
+                {target.compiler_flags}
+                -E
+                -x c
+                -o {root('./electrical/build', target.name, 'link.ld')}
+                {root('./electrical/src/link.ld')}
+        ''')
+
+        #
+        # Link object files.
+        #
+
+        execute(f'''
+            arm-none-eabi-gcc
+                -o {root('./electrical/build', target.name, target.name + '.elf')}
+                -T {root('./electrical/build', target.name, 'link.ld')}
+                {' '.join(
+                    str(root('./electrical/build', target.name, src.stem + '.o'))
+                    for src in target.srcs
+                )}
+                {target.linker_flags}
+        ''')
+
+        #
+        # Turn ELF into raw binary.
+        #
+
+        execute(f'''
+            arm-none-eabi-objcopy
+                -S
+                -O binary
+                {root('./electrical/build', target.name, target.name + '.elf')}
+                {root('./electrical/build', target.name, target.name + '.bin')}
+        ''')
+
+    log_header(f'Hip-hip hooray! Built {', '.join(f'"{target.name}"' for target in targets)}!')
+
+    for target in targets:
+
+        log(f'# {target.name.ljust(max(len(t.name) for t in targets))}', ansi = 'fg_magenta')
 
 
 
@@ -404,7 +543,7 @@ def flash():
         exit_code = execute(f'''
             STM32_Programmer_CLI
                 --connect port=SWD index={stlink.probe_index}
-                --download {root('./electrical/nucleo_h7s3l8_cubemx_test/Makefile/Boot/build/nucleo_h7s3l8_cubemx_test_Boot.bin')} 0x08000000
+                --download {root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.bin')} 0x08000000
                 --verify
                 --start
         ''', nonzero_exit_code_ok = True)
@@ -427,15 +566,36 @@ def debug(
         'STM32_Programmer_CLI',
     )
 
+    server = f'''
+        ST-LINK_gdbserver
+            --stm32cubeprogrammer-path {repr(str(pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent))}
+            --swd
+            --apid 1
+            --verify
+            --attach
+    '''
+
     if just_gdbserver: # This is mainly used for Visual Studio Code debugging.
-        execute(f'''
-            ST-LINK_gdbserver
-                --stm32cubeprogrammer-path {pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent}
-                --swd
-                --apid 1
-                --verify
-                --attach
-        ''', keyboard_interrupt_ok = True)
+        execute(server, keyboard_interrupt_ok = True)
+        return
+
+    require('arm-none-eabi-gdb')
+
+    gdb_insts = f'''
+        file {repr(str(root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.elf').as_posix()))}
+        target extended-remote localhost:61234
+        with pagination off -- focus cmd
+    '''
+
+    gdb = f'''
+        arm-none-eabi-gdb -q {' '.join(f'-ex "{inst.strip()}"' for inst in gdb_insts.strip().splitlines())}
+    '''
+
+    execute(
+        bash                  = f'set -m; {server} > /dev/null & {gdb}',
+        powershell            = f'{server} & {gdb}',
+        keyboard_interrupt_ok = True, # Whenever we stop execution in GDB using CTRL-C, a KeyboardInterrupt exception is raised as a false-positive.
+    )
 
 
 
