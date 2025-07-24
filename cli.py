@@ -1,10 +1,16 @@
 #! /usr/bin/env python3
 
-################################################################ Dependencies ################################################################
-
-
+#
+# Built-in modules.
+#
 
 import types, sys, shlex, pathlib, shutil, subprocess, time
+
+
+
+#
+# The PXD module.
+#
 
 try:
     import deps.pxd.ui
@@ -15,11 +21,22 @@ try:
 except ModuleNotFoundError as error:
     print(f'[ERROR] Could not import "{error.name}"; maybe the Git submodules need to be initialized/updated? Try doing:')
     print(f'        > git submodule update --init --recursive')
-    print(f'        If this still doesn\'t work, please raise an issue or patch the script yourself.')
+    print(f'        If this still doesn\'t work, please raise an issue.')
     sys.exit(1)
+
+
+
+#
+# Common definitions with the meta-preprocessor.
+#
 
 from electrical.src.Common import TARGET, TARGETS
 
+
+
+#
+# Import handler for PySerial.
+#
 
 def import_pyserial():
 
@@ -35,6 +52,10 @@ def import_pyserial():
     return serial, serial.tools.list_ports
 
 
+
+#
+# Routine for ensuring the user has the required programs on their machine (and provide good error messages if not).
+#
 
 def require(*needed_programs):
 
@@ -111,18 +132,18 @@ def require(*needed_programs):
 
     # Not implemented.
     else:
-        raise RuntimeError(
-            f'Unknown required program "{missing_program}"; '
-            f'please raise an issue or patch the script yourself.'
-        )
+        with log(ansi = 'fg_red'):
+            log(f'[ERROR] Python couldn\'t find "{missing_program}" in your PATH; have you installed it yet?')
 
     sys.exit(1)
 
 
 
-################################################################ Helpers ################################################################
+################################################################################################################################
 
-
+#
+# Routine for logging out ST-Links as a table.
+#
 
 def log_stlinks(stlinks):
 
@@ -140,20 +161,28 @@ def log_stlinks(stlinks):
 
 
 
+#
+# Routine for finding ST-Links.
+#
+
 def request_stlinks(
     *,
-    specific_one              = False,
-    specific_probe_index      = None,
-    flag_to_use_when_multiple = None,
+    specific_one         = False,
+    specific_probe_index = None,
 ):
 
-    #
     # Parse output of STM32_Programmer_CLI's findings.
     #
+    # e.g.
+    #     ST-Link Probe 0 :
+    #        ST-LINK SN  : 003F00493133510F37363734
+    #        ST-LINK FW  : V3J15M7
+    #        Access Port Number  : 2
+    #        Board Name  : NUCLEO-H7S3L8
 
     require('STM32_Programmer_CLI')
 
-    listing_lines = subprocess.check_output(['STM32_Programmer_CLI', '-l', 'st-link']).decode('utf-8').splitlines()
+    listing_lines = subprocess.check_output(['STM32_Programmer_CLI', '--list', 'st-link']).decode('utf-8').splitlines()
     stlinks       = [
         types.SimpleNamespace(
             probe_index        = int(listing_lines[i + 0].removeprefix(prefix).removesuffix(':')),
@@ -166,9 +195,9 @@ def request_stlinks(
         if listing_lines[i].startswith(prefix := 'ST-Link Probe ')
     ]
 
-    #
+
+
     # Find each ST-Link's corresponding serial port.
-    #
 
     serial, list_ports = import_pyserial()
 
@@ -177,9 +206,9 @@ def request_stlinks(
     for stlink in stlinks:
         stlink.comport, = [comport for comport in comports if comport.serial_number == stlink.serial_number]
 
-    #
+
+
     # If a specific probe index was given, give back that specific ST-Link.
-    #
 
     if specific_probe_index is not None:
 
@@ -197,9 +226,9 @@ def request_stlinks(
 
         return stlink
 
-    #
+
+
     # If the caller is assuming there's only one ST-Link, then give back the only one.
-    #
 
     if specific_one:
 
@@ -210,36 +239,36 @@ def request_stlinks(
         if len(stlinks) >= 2:
             log_stlinks(stlinks)
             log()
-            if flag_to_use_when_multiple is None:
-                log(f'[ERROR] Multiple ST-Links found; I don\'t know which one to use.', ansi = 'fg_red')
-            else:
-                log(f'[ERROR] Multiple ST-Links found; specify which one to use with "{flag_to_use_when_multiple}".', ansi = 'fg_red')
+            log(f'[ERROR] Multiple ST-Links found; I don\'t know which one to use.', ansi = 'fg_red')
             sys.exit(1)
 
         stlink, = stlinks
 
         return stlink
 
-    #
+
+
     # Otherwise, give back the list of the ST-Links we found (if any).
-    #
 
     return stlinks
 
 
 
+#
+# Routine for executing shell commands.
+#
+
 def execute(
-    default               = None, *,
+    default               = None,  # Typically for when the command for cmd.exe and bash are the same (e.g. "echo hello!").
+    *,
     bash                  = None,
-    cmd                   = None,
-    powershell            = None,
+    cmd                   = None,  # PowerShell is slow to invoke, so cmd.exe would be used if its good enough.
+    powershell            = None,  # "
     keyboard_interrupt_ok = False,
     nonzero_exit_code_ok  = False
 ):
 
-    #
-    # Determine the shell instructions we'll be executing based on the operating system.
-    #
+    # Determine the shell command we'll be executing based on the operating system.
 
     if cmd is not None and powershell is not None:
         raise RuntimeError(
@@ -251,72 +280,62 @@ def execute(
 
         case 'win32':
             use_powershell = cmd is None
-            instructions   = powershell if use_powershell else cmd
+            command        = powershell if use_powershell else cmd
 
         case _:
-            instructions   = bash
+            command        = bash
             use_powershell = False
 
-    if instructions is None:
-        instructions = default # Because sometimes the shell instructions are universal (e.g. "echo hello!").
+    if command is None:
+        command = default
 
-    if instructions is None:
+    if command is None:
         raise RuntimeError(
-            f'Missing shell instructions for platform "{sys.platform}"; '
+            f'Missing shell command for platform "{sys.platform}"; '
             f'please raise an issue or patch the script yourself.'
         )
 
     if use_powershell:
         require('pwsh')
 
-    if isinstance(instructions, str):
-        instructions = [instructions]
 
-    #
-    # Carry out every shell instruction.
-    #
 
-    for instruction in instructions:
+    # Carry out the shell command.
 
-        instruction = instruction.strip()
+    lexer                  = shlex.shlex(command)
+    lexer.quotes           = '"'
+    lexer.whitespace_split = True
+    lexer.commenters       = ''
+    lexer_parts            = list(lexer)
+    command                = ' '.join(lexer_parts)
 
-        if not instruction:
-            continue
+    log(f'$ {lexer_parts[0]}'    , end = '', ansi = 'fg_bright_green')
+    log(' '                      , end = ''                          )
+    log(' '.join(lexer_parts[1:]),                                   )
 
-        lexer                  = shlex.shlex(instruction)
-        lexer.quotes           = '"'
-        lexer.whitespace_split = True
-        lexer.commenters       = ''
-        lexer_parts            = list(lexer)
-        instruction            = ' '.join(lexer_parts)
+    if use_powershell:
+        command = ['pwsh', '-Command', command]
 
-        log(f'$ {lexer_parts[0]}'    , end = '', ansi = 'fg_bright_green')
-        log(' '                      , end = ''                          )
-        log(' '.join(lexer_parts[1:]),                                   )
+    try:
+        exit_code = subprocess.call(command, shell = True)
+    except KeyboardInterrupt:
+        if keyboard_interrupt_ok:
+            exit_code = None
+        else:
+            raise
 
-        if use_powershell: # Note that it's slow to invoke PowerShell, so we'd use cmd.exe when we don't need PowerShell features.
-            instruction = ['pwsh', '-Command', instruction]
+    if exit_code and not nonzero_exit_code_ok:
+        log()
+        log(f'[ERROR] Shell command exited with a non-zero code of {exit_code}.', ansi = 'fg_red')
+        sys.exit(exit_code)
 
-        try:
-            exit_code = subprocess.call(instruction, shell = True)
-        except KeyboardInterrupt:
-            if keyboard_interrupt_ok:
-                exit_code = None
-            else:
-                raise
-
-        if exit_code and not nonzero_exit_code_ok:
-            log()
-            log(f'[ERROR] Shell command exited with a non-zero code of {exit_code}.', ansi = 'fg_red')
-            sys.exit(exit_code)
-
-        return exit_code
+    return exit_code
 
 
 
-################################################################ CLI Commands ################################################################
-
-
+#
+# This Python script's user-interface constructor.
+#
 
 def ui_hook(subcmd_name):
 
@@ -328,13 +347,15 @@ def ui_hook(subcmd_name):
         log()
         log(f'> "{subcmd_name}" took: {elapsed :.3f}s')
 
-
-
 ui = deps.pxd.ui.UI(
     f'{root(pathlib.Path(__file__).name)}',
     f'The command line program (pronounced "clippy").',
     ui_hook,
 )
+
+
+
+################################################################################################################################
 
 
 
@@ -357,10 +378,14 @@ def clean():
 
 
 
+################################################################################################################################
+
+
+
 @ui('Compile and generate the binary for flashing.')
 def build(
-    specific_target_name : ([target.name for target in TARGETS], 'Target program to build; otherwise, build entire project.'         ) = None,
-    metapreprocess_only  : (bool                               , 'Only execute the Meta-Preprocessor; no compiling and linking done.') = False
+    specific_target_name : ([target.name for target in TARGETS], 'Target program to build; otherwise, build entire project.') = None,
+    metapreprocess_only  : (bool                               , 'Run the meta-preprocessor; no compiling and linking.'     ) = False
 ):
 
     if specific_target_name is None:
@@ -373,11 +398,11 @@ def build(
         log(f'{'>' * 32} {header} {'<' * 32}', ansi = ('bold', 'fg_bright_black'))
         log()
 
-    #
-    # Begin meta-preprocessing!
-    #
 
-    log_header('Meta-Preprocessing')
+
+    # Begin meta-preprocessing!
+
+    log_header('Meta-preprocessing')
 
     metapreprocessor_file_paths = [
         pathlib.Path(root, file_name)
@@ -434,14 +459,14 @@ def build(
         sys.exit(str(err) if err.args else 1)
 
     log()
-    log(f'# Meta-Preprocessor : {float(metapreprocessing_elapsed) :.3}s.', ansi = 'fg_magenta')
+    log(f'# Meta-preprocessor : {float(metapreprocessing_elapsed) :.3}s.', ansi = 'fg_magenta')
 
     if metapreprocess_only:
         return
 
-    #
+
+
     # Compile each source.
-    #
 
     require(
         'arm-none-eabi-gcc',
@@ -468,10 +493,7 @@ def build(
 
         log_header(f'Linking "{target.name}"')
 
-        #
         # Preprocess the linker file.
-        #
-
         execute(f'''
             arm-none-eabi-cpp
                 {target.compiler_flags}
@@ -481,10 +503,7 @@ def build(
                 {root('./electrical/src/link.ld')}
         ''')
 
-        #
         # Link object files.
-        #
-
         execute(f'''
             arm-none-eabi-gcc
                 -o {root('./electrical/build', target.name, target.name + '.elf')}
@@ -496,10 +515,7 @@ def build(
                 {target.linker_flags}
         ''')
 
-        #
         # Turn ELF into raw binary.
-        #
-
         execute(f'''
             arm-none-eabi-objcopy
                 -S
@@ -508,11 +524,16 @@ def build(
                 {root('./electrical/build', target.name, target.name + '.bin')}
         ''')
 
+
+    # Completion.
+
     log_header(f'Hip-hip hooray! Built {', '.join(f'"{target.name}"' for target in targets)}!')
-
     for target in targets:
-
         log(f'# {target.name.ljust(max(len(t.name) for t in targets))}', ansi = 'fg_magenta')
+
+
+
+################################################################################################################################
 
 
 
@@ -521,8 +542,7 @@ def flash():
 
     require('STM32_Programmer_CLI')
 
-    stlink = request_stlinks(specific_one = True)
-
+    stlink   = request_stlinks(specific_one = True)
     attempts = 0
 
     while True:
@@ -530,7 +550,12 @@ def flash():
         # Maxed out attempts?
         if attempts == 3:
             log()
-            log('[ERROR] Failed to flash (maybe due to ST-Link not being connected or that it\'s busy).', ansi = 'fg_red')
+            with log(ansi = 'fg_red'):
+                log('[ERROR] Failed to flash; this might be because...')
+                log('        - the binary file haven\'t been built yet.')
+                log('        - the ST-Link is being used by a another program.')
+                log('        - the ST-Link has disconnected.')
+                log('        - ... or something else entirely!')
             sys.exit(1)
 
         # Not the first try?
@@ -556,9 +581,13 @@ def flash():
 
 
 
+################################################################################################################################
+
+
+
 @ui('Set up a debugging session.')
 def debug(
-    just_gdbserver : (bool, 'Just set up the GDB-server and nothing else.') = False
+    just_gdbserver : (bool, 'Just set up the GDB-server and nothing else; mainly used for Visual Studio Code.') = False
 ):
 
     require(
@@ -566,36 +595,42 @@ def debug(
         'STM32_Programmer_CLI',
     )
 
-    server = f'''
+    apid = 1 # TODO This is the core ID, which varies board to board... Maybe we just hardcode it?
+
+    gdbserver = f'''
         ST-LINK_gdbserver
             --stm32cubeprogrammer-path {repr(str(pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent))}
             --swd
-            --apid 1
+            --apid {apid}
             --verify
             --attach
     '''
 
-    if just_gdbserver: # This is mainly used for Visual Studio Code debugging.
-        execute(server, keyboard_interrupt_ok = True)
+    if just_gdbserver:
+        execute(gdbserver, keyboard_interrupt_ok = True)
         return
 
     require('arm-none-eabi-gdb')
 
-    gdb_insts = f'''
+    gdb_init = f'''
         file {repr(str(root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.elf').as_posix()))}
         target extended-remote localhost:61234
         with pagination off -- focus cmd
     '''
 
     gdb = f'''
-        arm-none-eabi-gdb -q {' '.join(f'-ex "{inst.strip()}"' for inst in gdb_insts.strip().splitlines())}
+        arm-none-eabi-gdb -q {' '.join(f'-ex "{inst.strip()}"' for inst in gdb_init.strip().splitlines())}
     '''
 
     execute(
-        bash                  = f'set -m; {server} > /dev/null & {gdb}',
-        powershell            = f'{server} & {gdb}',
-        keyboard_interrupt_ok = True, # Whenever we stop execution in GDB using CTRL-C, a KeyboardInterrupt exception is raised as a false-positive.
+        bash                  = f'set -m; {gdbserver} > /dev/null & {gdb}',
+        powershell            = f'{gdbserver} & {gdb}',
+        keyboard_interrupt_ok = True, # Whenever we halt execution in GDB using CTRL-C, a KeyboardInterrupt exception is raised, but this is a false-positive.
     )
+
+
+
+################################################################################################################################
 
 
 
@@ -605,6 +640,10 @@ def _():
         log_stlinks(stlinks)
     else:
         log('No ST-Link detected by STM32_Programmer_CLI.')
+
+
+
+################################################################################################################################
 
 
 
