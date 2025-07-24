@@ -369,10 +369,10 @@ def clean():
     for directory in directories:
         execute(
             bash = f'''
-                rm -rf {directory}
+                rm -rf {repr(str(directory))}
             ''',
             cmd = f'''
-                if exist {directory} rmdir /S /Q {directory}
+                if exist {repr(str(directory))} rmdir /S /Q {repr(str(directory))}
             ''',
         )
 
@@ -505,8 +505,8 @@ def build(
 
             execute(f'''
                 arm-none-eabi-gcc
-                    -o {obj}
-                    -c {src}
+                    -o {repr(str(obj))}
+                    -c {repr(str(src))}
                     {target.compiler_flags}
             ''')
 
@@ -530,17 +530,17 @@ def build(
                 {target.compiler_flags}
                 -E
                 -x c
-                -o {root('./electrical/build', target.name, 'link.ld')}
-                {root('./electrical/src/link.ld')}
+                -o {repr(str(root('./electrical/build', target.name, 'link.ld')))}
+                {repr(str(root('./electrical/src/link.ld')))}
         ''')
 
         # Link object files.
         execute(f'''
             arm-none-eabi-gcc
-                -o {root('./electrical/build', target.name, target.name + '.elf')}
-                -T {root('./electrical/build', target.name, 'link.ld')}
+                -o {repr(str(root('./electrical/build', target.name, target.name + '.elf')))}
+                -T {repr(str(root('./electrical/build', target.name, 'link.ld')))}
                 {' '.join(
-                    str(root('./electrical/build', target.name, src.stem + '.o'))
+                    repr(str(root('./electrical/build', target.name, src.stem + '.o')))
                     for src in target.srcs
                 )}
                 {target.linker_flags}
@@ -551,8 +551,8 @@ def build(
             arm-none-eabi-objcopy
                 -S
                 -O binary
-                {root('./electrical/build', target.name, target.name + '.elf')}
-                {root('./electrical/build', target.name, target.name + '.bin')}
+                {repr(str(root('./electrical/build', target.name, target.name + '.elf')))}
+                {repr(str(root('./electrical/build', target.name, target.name + '.bin')))}
         ''')
 
 
@@ -600,7 +600,7 @@ def flash():
         exit_code = execute(f'''
             STM32_Programmer_CLI
                 --connect port=SWD index={stlink.probe_index}
-                --download {root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.bin')} 0x08000000
+                --download {repr(str(root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.bin')))} 0x08000000
                 --verify
                 --start
         ''', nonzero_exit_code_ok = True)
