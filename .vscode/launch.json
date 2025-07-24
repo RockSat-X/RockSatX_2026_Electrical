@@ -10,7 +10,7 @@
             "gdbTarget"               : "localhost:61234",                           // "
             "overrideRestartCommands" : ["monitor reset"],                           // "
             "overrideLaunchCommands"  : ["load"],                                    // "
-            "executable"              : "./electrical/build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
+            "executable"              : "./build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
             "breakAfterReset"         : false,
         },
         {
@@ -22,7 +22,7 @@
             "gdbTarget"               : "localhost:61234",                           // "
             "overrideRestartCommands" : ["monitor reset"],                           // "
             "overrideLaunchCommands"  : ["load"],                                    // "
-            "executable"              : "./electrical/build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
+            "executable"              : "./build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
             "breakAfterReset"         : true,
         },
         {
@@ -34,7 +34,7 @@
             "gdbTarget"               : "localhost:61234",                           // "
             "overrideRestartCommands" : ["monitor reset"],                           // "
             "overrideLaunchCommands"  : ["load"],                                    // "
-            "executable"              : "./electrical/build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
+            "executable"              : "./build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
             "runToEntryPoint"         : "main",
         },
         {
@@ -45,7 +45,7 @@
             "preLaunchTask"           : "Make a GDB-server.", // "
             "gdbTarget"               : "localhost:61234",    // "
             "overrideRestartCommands" : ["monitor reset"],    // "
-            "executable"              : "./electrical/build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
+            "executable"              : "./build/SandboxNucleoH7S3L8/SandboxNucleoH7S3L8.elf",
         },
     ],
 }

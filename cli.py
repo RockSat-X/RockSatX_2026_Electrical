@@ -30,7 +30,7 @@ except ModuleNotFoundError as error:
 # Common definitions with the meta-preprocessor.
 #
 
-from electrical.src.Common import TARGET, TARGETS, BUILD
+from electrical.Common import TARGET, TARGETS, BUILD
 
 
 
@@ -410,7 +410,7 @@ def build(
 
     metapreprocessor_file_paths = [
         pathlib.Path(root, file_name)
-        for root, dirs, file_names in root('./electrical/src').walk()
+        for root, dirs, file_names in root('./electrical').walk()
         for file_name in file_names
         if file_name.endswith(('.c', '.h', '.py', '.ld', '.S'))
     ]
@@ -531,7 +531,7 @@ def build(
                 -E
                 -x c
                 -o {repr(str(root(BUILD, target.name, 'link.ld')))}
-                {repr(str(root('./electrical/src/link.ld')))}
+                {repr(str(root('./electrical/link.ld')))}
         ''')
 
         # Link object files.

@@ -126,7 +126,7 @@ def CMSIS_SPINLOCK(*args):
 # Targets.
 #
 
-BUILD = root('./electrical/build')
+BUILD = root('./build')
 
 TARGET  = lambda target_name: next(target for target in TARGETS if target.name == target_name)
 TARGETS = (
@@ -134,8 +134,8 @@ TARGETS = (
         name = 'SandboxNucleoH7S3L8',
         mcu  = 'STM32H7S3',
         srcs = root('''
-            ./electrical/src/SandboxNucleoH7S3L8.c
-            ./electrical/src/Prelude.S
+            ./electrical/SandboxNucleoH7S3L8.c
+            ./electrical/Prelude.S
         '''),
     ),
 )
@@ -197,11 +197,11 @@ for target in TARGETS:
         '''
 
         # Search path.
-        f'''{'\n'.join(f'-I "{root(path)}"' for path in '''
-            ./electrical/build/meta
-            ./deps/CMSIS_6/CMSIS/Core/Include
-            ./deps/cmsis_device_h7s3l8/Include
-        '''.split())}'''
+        f'''{'\n'.join(f'-I {repr(str(path))}' for path in (
+            root(BUILD, 'meta'),
+            root('./deps/CMSIS_6/CMSIS/Core/Include'),
+            root('./deps/cmsis_device_h7s3l8/Include'),
+        ))}'''
     )
 
     target.linker_flags = f'''
