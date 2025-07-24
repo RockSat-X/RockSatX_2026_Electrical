@@ -30,7 +30,7 @@ except ModuleNotFoundError as error:
 # Common definitions with the meta-preprocessor.
 #
 
-from electrical.src.Common import TARGET, TARGETS
+from electrical.src.Common import TARGET, TARGETS, BUILD
 
 
 
@@ -362,9 +362,9 @@ ui = deps.pxd.ui.UI(
 @ui(f'Delete all build artifacts.')
 def clean():
 
-    directories = root('''
-        ./electrical/build
-    ''')
+    directories = [
+        BUILD,
+    ]
 
     for directory in directories:
         execute(
@@ -472,7 +472,7 @@ def build(
 
     try:
         deps.pxd.metapreprocessor.do(
-            output_dir_path   = root('./electrical/build/meta/'),
+            output_dir_path   = root(BUILD, 'meta'),
             source_file_paths = metapreprocessor_file_paths,
             callback          = metadirective_callback,
         )
@@ -499,7 +499,7 @@ def build(
 
         for src in target.srcs:
 
-            obj = root('./electrical/build', target.name, src.stem + '.o')
+            obj = root(BUILD, target.name, src.stem + '.o')
 
             obj.parent.mkdir(parents = True, exist_ok = True)
 
@@ -530,17 +530,17 @@ def build(
                 {target.compiler_flags}
                 -E
                 -x c
-                -o {repr(str(root('./electrical/build', target.name, 'link.ld')))}
+                -o {repr(str(root(BUILD, target.name, 'link.ld')))}
                 {repr(str(root('./electrical/src/link.ld')))}
         ''')
 
         # Link object files.
         execute(f'''
             arm-none-eabi-gcc
-                -o {repr(str(root('./electrical/build', target.name, target.name + '.elf')))}
-                -T {repr(str(root('./electrical/build', target.name, 'link.ld')))}
+                -o {repr(str(root(BUILD, target.name, target.name + '.elf')))}
+                -T {repr(str(root(BUILD, target.name, 'link.ld')))}
                 {' '.join(
-                    repr(str(root('./electrical/build', target.name, src.stem + '.o')))
+                    repr(str(root(BUILD, target.name, src.stem + '.o')))
                     for src in target.srcs
                 )}
                 {target.linker_flags}
@@ -551,8 +551,8 @@ def build(
             arm-none-eabi-objcopy
                 -S
                 -O binary
-                {repr(str(root('./electrical/build', target.name, target.name + '.elf')))}
-                {repr(str(root('./electrical/build', target.name, target.name + '.bin')))}
+                {repr(str(root(BUILD, target.name, target.name + '.elf')))}
+                {repr(str(root(BUILD, target.name, target.name + '.bin')))}
         ''')
 
 
@@ -600,7 +600,7 @@ def flash():
         exit_code = execute(f'''
             STM32_Programmer_CLI
                 --connect port=SWD index={stlink.probe_index}
-                --download {repr(str(root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.bin')))} 0x08000000
+                --download {repr(str(root(BUILD, 'NucleoH7S3L8/NucleoH7S3L8.bin')))} 0x08000000
                 --verify
                 --start
         ''', nonzero_exit_code_ok = True)
@@ -645,7 +645,7 @@ def debug(
     require('arm-none-eabi-gdb')
 
     gdb_init = f'''
-        file {repr(str(root('./electrical/build/NucleoH7S3L8/NucleoH7S3L8.elf').as_posix()))}
+        file {repr(str(root(BUILD, 'NucleoH7S3L8/NucleoH7S3L8.elf').as_posix()))}
         target extended-remote localhost:61234
         with pagination off -- focus cmd
     '''

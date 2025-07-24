@@ -126,6 +126,8 @@ def CMSIS_SPINLOCK(*args):
 # Targets.
 #
 
+BUILD = root('./electrical/build')
+
 TARGET  = lambda target_name: next(target for target in TARGETS if target.name == target_name)
 TARGETS = (
     Record(
