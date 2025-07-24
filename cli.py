@@ -570,7 +570,30 @@ def build(
 
 
 @ui('Flash the binary to the MCU.')
-def flash():
+def flash(
+    specific_target_name : ([target.name for target in TARGETS], 'Target MCU to program.') = None,
+):
+
+    # If there's only one target that can be programmed, use that by default.
+
+    if specific_target_name is None:
+
+        if len(TARGETS) >= 2:
+            ui.help(subcommand_name = 'flash')
+            log()
+            with log(ansi = 'fg_red'):
+                log('[ERROR] Please specify the target to flash; see the list of targets above.')
+            sys.exit(1)
+
+        target, = TARGETS
+
+    else:
+
+        target = TARGET(specific_target_name)
+
+
+
+    # Begin flashing the MCU, which might take multiple tries.
 
     require('STM32_Programmer_CLI')
 
@@ -600,7 +623,7 @@ def flash():
         exit_code = execute(f'''
             STM32_Programmer_CLI
                 --connect port=SWD index={stlink.probe_index}
-                --download {repr(str(root(BUILD, 'NucleoH7S3L8/NucleoH7S3L8.bin')))} 0x08000000
+                --download {repr(str(root(BUILD, target.name, target.name + '.bin')))} 0x08000000
                 --verify
                 --start
         ''', nonzero_exit_code_ok = True)
@@ -619,16 +642,18 @@ def flash():
 
 @ui('Set up a debugging session.')
 def debug(
-    just_gdbserver : (bool, 'Just set up the GDB-server and nothing else; mainly used for Visual Studio Code.') = False
+    specific_target_name : ([target.name for target in TARGETS], 'Target MCU to debug.')                              = None,
+    just_gdbserver       : (bool, 'Just set up the GDB-server and nothing else; mainly used for Visual Studio Code.') = False
 ):
+
+    # Set up the GDB-server.
 
     require(
         'ST-LINK_gdbserver',
         'STM32_Programmer_CLI',
     )
 
-    apid = 1 # TODO This is the core ID, which varies board to board... Maybe we just hardcode it?
-
+    apid      = 1 # TODO This is the core ID, which varies board to board... Maybe we just hardcode it?
     gdbserver = f'''
         ST-LINK_gdbserver
             --stm32cubeprogrammer-path {repr(str(pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent))}
@@ -642,10 +667,33 @@ def debug(
         execute(gdbserver, keyboard_interrupt_ok = True)
         return
 
+
+
+    # If there's only one target that can be programmed, use that by default.
+
+    if specific_target_name is None:
+
+        if len(TARGETS) >= 2:
+            ui.help(subcommand_name = 'debug')
+            log()
+            with log(ansi = 'fg_red'):
+                log('[ERROR] Please specify the target to debug; see the list of targets above.')
+            sys.exit(1)
+
+        target, = TARGETS
+
+    else:
+
+        target = TARGET(specific_target_name)
+
+
+
+    # Set up GDB.
+
     require('arm-none-eabi-gdb')
 
     gdb_init = f'''
-        file {repr(str(root(BUILD, 'NucleoH7S3L8/NucleoH7S3L8.elf').as_posix()))}
+        file {repr(str(root(BUILD, target.name, target.name + '.elf').as_posix()))}
         target extended-remote localhost:61234
         with pagination off -- focus cmd
     '''
@@ -653,6 +701,10 @@ def debug(
     gdb = f'''
         arm-none-eabi-gdb -q {' '.join(f'-ex "{inst.strip()}"' for inst in gdb_init.strip().splitlines())}
     '''
+
+
+
+    # Launch the debugging session.
 
     execute(
         bash                  = f'set -m; {gdbserver} > /dev/null & {gdb}',
