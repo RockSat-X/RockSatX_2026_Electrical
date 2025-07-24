@@ -131,10 +131,10 @@ BUILD = root('./electrical/build')
 TARGET  = lambda target_name: next(target for target in TARGETS if target.name == target_name)
 TARGETS = (
     Record(
-        name = 'NucleoH7S3L8',
+        name = 'SandboxNucleoH7S3L8',
         mcu  = 'STM32H7S3',
         srcs = root('''
-            ./electrical/src/NucleoH7S3L8.c
+            ./electrical/src/SandboxNucleoH7S3L8.c
             ./electrical/src/Prelude.S
         '''),
     ),
