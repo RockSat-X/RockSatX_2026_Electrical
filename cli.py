@@ -388,10 +388,16 @@ def build(
     metapreprocess_only  : (bool                               , 'Run the meta-preprocessor; no compiling and linking.'     ) = False
 ):
 
+    # Determine the targets we're building for.
+
     if specific_target_name is None:
         targets = TARGETS
     else:
         targets = [TARGET(specific_target_name)]
+
+
+
+    # Logging routine for outputting nice dividers in stdout.
 
     def log_header(header):
         log()
@@ -400,9 +406,7 @@ def build(
 
 
 
-    # Begin meta-preprocessing!
-
-    log_header('Meta-preprocessing')
+    # Determine the files for the meta-preprocessor to scan through.
 
     metapreprocessor_file_paths = [
         pathlib.Path(root, file_name)
@@ -411,43 +415,60 @@ def build(
         if file_name.endswith(('.c', '.h', '.py', '.ld', '.S'))
     ]
 
-    metapreprocessing_elapsed = 0
+
+
+    # Callback of things to do before and after the execution of a meta-directive.
+
+    elapsed = 0
 
     def metadirective_callback(info):
 
-        nonlocal metapreprocessing_elapsed
+        nonlocal elapsed
 
-        export_report = ''
 
-        for symbol in info.exports:
 
-            export_report += ', ' if export_report else ' '
+        # Log information about the meta-directive that we're about to evaluate.
 
-            if len(export_report) + len(symbol) < 64:
-                export_report += symbol
-            else:
-                export_report += '...'
-                break
+        export_preview = ', '.join(info.exports)
 
-        source_file_path_just   = max(len(str(meta_directive.source_file_path  )) for meta_directive in info.meta_directives)
-        header_line_number_just = max(len(str(meta_directive.header_line_number)) for meta_directive in info.meta_directives)
-        index_just              =     len(str(len(info.meta_directives)))
+        if export_preview:
 
-        log(
-            f'| {str(info.index + 1).rjust(index_just)}/{len(info.meta_directives)} '
-            f'| {info.source_file_path.ljust(source_file_path_just)} '
-            f': {str(info.header_line_number).ljust(header_line_number_just)} '
-            f'|{export_report}'
-        )
+            if len(export_preview) > (cutoff := 64): # This meta-directive is exporting a lot of stuff, so we trim the list.
+                export_preview = ', '.join(export_preview[:cutoff].rsplit(',')[:-1] + ['...'])
+
+            export_preview = ' ' + export_preview
+
+
+        log('| {nth}/{count} | {src} : {line} |{export_preview}'.format(
+            count          = len(info.meta_directives),
+            export_preview = export_preview,
+            **ljusts({
+                'nth'  : meta_directive_i + 1,
+                'src'  : meta_directive.source_file_path,
+                'line' : meta_directive.header_line_number,
+            } for meta_directive_i, meta_directive in enumerate(info.meta_directives))[info.index],
+        ))
+
+
+
+        # Record how long it took to run this meta-directive.
 
         start  = time.time()
         output = yield
         end    = time.time()
+        delta  = end - start
 
-        if (elapsed := end - start) > 0.050:
-            log(f'#    ^ {elapsed :.3}s')
+        if delta > 0.050:
+            log(f'^ {delta :.3}s', ansi = 'fg_yellow') # Warn that this meta-directive took quite a while to execute.
 
-        metapreprocessing_elapsed += elapsed
+        elapsed += delta
+
+
+
+
+    # Begin meta-preprocessing!
+
+    log_header('Meta-preprocessing')
 
     try:
         deps.pxd.metapreprocessor.do(
@@ -456,10 +477,10 @@ def build(
             callback          = metadirective_callback,
         )
     except deps.pxd.metapreprocessor.MetaError as err:
-        sys.exit(str(err) if err.args else 1)
+        sys.exit(err)
 
     log()
-    log(f'# Meta-preprocessor : {float(metapreprocessing_elapsed) :.3}s.', ansi = 'fg_magenta')
+    log(f'# Meta-preprocessor : {elapsed :.3f}s.', ansi = 'fg_magenta')
 
     if metapreprocess_only:
         return
@@ -470,9 +491,6 @@ def build(
 
     require(
         'arm-none-eabi-gcc',
-        'arm-none-eabi-cpp',
-        'arm-none-eabi-objcopy',
-        'arm-none-eabi-gdb',
     )
 
     for target in targets:
@@ -480,14 +498,27 @@ def build(
         log_header(f'Compiling "{target.name}"')
 
         for src in target.srcs:
+
             obj = root('./electrical/build', target.name, src.stem + '.o')
-            obj.parent.mkdir(parents=True, exist_ok=True)
+
+            obj.parent.mkdir(parents = True, exist_ok = True)
+
             execute(f'''
                 arm-none-eabi-gcc
                     -o {obj}
                     -c {src}
                     {target.compiler_flags}
             ''')
+
+
+
+    # Link the firmware.
+
+    require(
+        'arm-none-eabi-cpp',
+        'arm-none-eabi-objcopy',
+        'arm-none-eabi-gdb',
+    )
 
     for target in targets:
 
@@ -525,7 +556,8 @@ def build(
         ''')
 
 
-    # Completion.
+
+    # Done!
 
     log_header(f'Hip-hip hooray! Built {', '.join(f'"{target.name}"' for target in targets)}!')
     for target in targets:
