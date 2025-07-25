@@ -30,7 +30,7 @@ except ModuleNotFoundError as error:
 # Common definitions with the meta-preprocessor.
 #
 
-from electrical.Common import TARGET, TARGETS, BUILD
+from electrical.Common import TARGETS, BUILD
 
 
 
@@ -393,7 +393,7 @@ def build(
     if specific_target_name is None:
         targets = TARGETS
     else:
-        targets = [TARGET(specific_target_name)]
+        targets = [TARGETS.get(specific_target_name)]
 
 
 
@@ -497,7 +497,7 @@ def build(
 
         log_header(f'Compiling "{target.name}"')
 
-        for src in target.srcs:
+        for src in target.source_file_paths:
 
             obj = root(BUILD, target.name, src.stem + '.o')
 
@@ -541,7 +541,7 @@ def build(
                 -T {repr(str(root(BUILD, target.name, 'link.ld')))}
                 {' '.join(
                     repr(str(root(BUILD, target.name, src.stem + '.o')))
-                    for src in target.srcs
+                    for src in target.source_file_paths
                 )}
                 {target.linker_flags}
         ''')
@@ -589,7 +589,7 @@ def flash(
 
     else:
 
-        target = TARGET(specific_target_name)
+        target = TARGETS.get(specific_target_name)
 
 
 
@@ -684,7 +684,7 @@ def debug(
 
     else:
 
-        target = TARGET(specific_target_name)
+        target = TARGETS.get(specific_target_name)
 
 
 
