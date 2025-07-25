@@ -560,8 +560,6 @@ def build(
     # Done!
 
     log_header(f'Hip-hip hooray! Built {', '.join(f'"{target.name}"' for target in targets)}!')
-    for target in targets:
-        log(f'# {target.name.ljust(max(len(t.name) for t in targets))}', ansi = 'fg_magenta')
 
 
 
