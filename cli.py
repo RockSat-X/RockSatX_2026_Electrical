@@ -648,6 +648,8 @@ def debug(
 
     # Set up the GDB-server.
 
+    stlink = request_stlinks(specific_one = True)
+
     require(
         'ST-LINK_gdbserver',
         'STM32_Programmer_CLI',
@@ -657,6 +659,7 @@ def debug(
     gdbserver = f'''
         ST-LINK_gdbserver
             --stm32cubeprogrammer-path {repr(str(pathlib.Path(shutil.which('STM32_Programmer_CLI')).parent))}
+            --serial-number {stlink.serial_number}
             --swd
             --apid {apid}
             --verify
