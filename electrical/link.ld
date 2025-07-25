@@ -66,7 +66,7 @@ SECTIONS
         .               += LINK_stack_size;
         LINK_stack_addr  = .;
 
-        #define STACK_LOCATION_NucleoH7S3L8 DTCM
+        #define STACK_LOCATION_SandboxNucleoH7S3L8 DTCM
     } > PICK(STACK_LOCATION)
 
     .data_output_section : ALIGN(4)
@@ -77,7 +77,7 @@ SECTIONS
         .                       = ALIGN(4);
         LINK_data_virt_addr_end = .;
 
-        #define DATA_LOCATION_NucleoH7S3L8 AXI_SRAM
+        #define DATA_LOCATION_SandboxNucleoH7S3L8 AXI_SRAM
     } > PICK(DATA_LOCATION) AT > FLASH
 
     .bss_output_section : ALIGN(4)
@@ -87,6 +87,6 @@ SECTIONS
         .                 = ALIGN(4);
         LINK_bss_addr_end = .;
 
-        #define BSS_LOCATION_NucleoH7S3L8 AXI_SRAM
+        #define BSS_LOCATION_SandboxNucleoH7S3L8 AXI_SRAM
     } > PICK(BSS_LOCATION)
 }
