@@ -362,4 +362,5 @@ for target in TARGETS:
         -nostdlib
         -lgcc
         -lc
+        -Xlinker --fatal-warnings
     '''
