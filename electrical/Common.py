@@ -262,6 +262,7 @@ TARGETS = TargetTuple((
             ./electrical/SandboxNucleoH7S3L8.c
             ./electrical/Prelude.S
         '''),
+        stack_size = 8192, # TODO This might be removed depending on how FreeRTOS works.
     ),
 
 ))
@@ -326,13 +327,14 @@ for target in TARGETS:
     # Additional macro defines.
 
     defines = [
-        ('_TARGET', f'_{target.name}'),
+        ('TARGET_NAME'    , target.name      ),
+        ('LINK_stack_size', target.stack_size),
     ]
 
     for other in TARGETS:
         defines += [
-            (other.name, int(other.name == target.name)),
-            (other.mcu , int(other.mcu  == target.mcu )),
+            (f'TARGET_NAME_IS_{other.name}', int(other.name == target.name)),
+            (f'TARGET_MCU_IS_{other.mcu}'  , int(other.mcu  == target.mcu )),
         ]
 
 

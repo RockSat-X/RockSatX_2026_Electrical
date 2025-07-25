@@ -260,7 +260,7 @@ HANDLER_Reset:
 
             target_mcu, entries = __
 
-            yield target_mcu
+            yield f'TARGET_MCU_IS_{target_mcu}'
 
             for entryi, entry in enumerate(entries):
 
