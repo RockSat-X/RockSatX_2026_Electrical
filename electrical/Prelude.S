@@ -1,7 +1,16 @@
 .syntax unified
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Default Handler Indirect, due to limitations of weak symbols.
+// @/on 2025-july-25/by:`Phuc Doan`.
+// The "HANDLER_Default_indirect" here just simply calls "HANDLER_Default" that's defined in a different object file.
+// This is due to the fact that every interrupt routine is a weak symbol which the user can overwrite by defining the symbol;
+// if the user doesn't do so, then the weak symbol defaults to "HANDLER_Default_indirect".
+// The reason why it's not "HANDLER_Default" itself is because "HANDLER_Default" is a symbol that's also defined in a separate
+// object file, and the limitation of weak symbols restrict it so that its default value can only be to something that's within
+// the same object file the weak symbol is defined in.
+// Annoying!
 //
 
 .section .text
@@ -9,18 +18,20 @@
 HANDLER_Default_indirect:
     b HANDLER_Default
 
-//
-// Reset Interrupt.
-//
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 .section .text
 .thumb_func
 .global HANDLER_Reset
 HANDLER_Reset:
 
-    //
+
+
     // Move bytes from LMA to VMA for the data section.
-    //
 
     ldr r0, =LINK_data_load_addr_start
     ldr r1, =LINK_data_virt_addr_start
@@ -36,9 +47,9 @@ HANDLER_Reset:
         cmp r1, r2
         bne copy_data
 
-    //
+
+
     // Zero-initialize BSS section.
-    //
 
     mov r0, 0
     ldr r1, =LINK_bss_addr_start
@@ -52,215 +63,64 @@ HANDLER_Reset:
         cmp r1, r2
         bne zero_bss
 
-    //
+
+
     // Enable the floating point coprocessor.
     // Must be done here since GCC can emit vector push/pop instructions on entering main
     // that'd otherwise emit an illegal instruction fault.
-    //
 
     ldr r0, =0xE000ED88                     // CPACR register address. @/pg 597/tbl B3-4/`ARMv7-M`.
     ldr r1, [r0]
     orr r1, r1, (0b11 << 22) | (0b11 << 20) // Full access to coprocessor 10 and 11. @/pg 614/sec B3.2.20/`ARMv7-M`.
     str r1, [r0]
 
-    //
+
+
     // Finished initializing, we begin main!
-    //
 
     b main
 
-//
-// Vector Table.
-//
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 .section .vector_table, "a"
 
     .word LINK_stack_addr
     .word HANDLER_Reset
 
-    #include "INTERRUPT_TABLE.meta"
-    /* #meta INTERRUPT_TABLE
-        INTERRUPT_TABLE = Obj(
-            STM32H7S3 = ( # @/pg 860/tbl 142/`H7S3rm`.
-                'NMI',
-                'HardFault',
-                'MemManage',
-                'BusFault',
-                'UsageFault',
-                None,
-                None,
-                None,
-                None,
-                'SVCall',
-                'DebugMonitor',
-                None,
-                'PendSV',
-                'SysTick',
-                'PVD_PVM',
-                None,
-                'DTS',
-                'IWDG',
-                'WWDG',
-                'RCC',
-                None,
-                None,
-                'FLASH',
-                'RAMECC',
-                'FPU',
-                None,
-                None,
-                'TAMP',
-                None,
-                None,
-                'EXTI0',
-                'EXTI1',
-                'EXTI2',
-                'EXTI3',
-                'EXTI4',
-                'EXTI5',
-                'EXTI6',
-                'EXTI7',
-                'EXTI8',
-                'EXTI9',
-                'EXTI10',
-                'EXTI11',
-                'EXTI12',
-                'EXTI13',
-                'EXTI14',
-                'EXTI15',
-                'RTC',
-                'SAES',
-                'CRYP',
-                'PKA',
-                'HASH',
-                'RNG',
-                'ADC1_2',
-                'GPDMA1_Channel0',
-                'GPDMA1_Channel1',
-                'GPDMA1_Channel2',
-                'GPDMA1_Channel3',
-                'GPDMA1_Channel4',
-                'GPDMA1_Channel5',
-                'GPDMA1_Channel6',
-                'GPDMA1_Channel7',
-                'TIM1_BRK',
-                'TIM1_UP',
-                'TIM1_TRG_COM',
-                'TIM1_CC',
-                'TIM2',
-                'TIM3',
-                'TIM4',
-                'TIM5',
-                'TIM6',
-                'TIM7',
-                'TIM9',
-                'SPI1',
-                'SPI2',
-                'SPI3',
-                'SPI4',
-                'SPI5',
-                'SPI6',
-                'HPDMA1_Channel0',
-                'HPDMA1_Channel1',
-                'HPDMA1_Channel2',
-                'HPDMA1_Channel3',
-                'HPDMA1_Channel4',
-                'HPDMA1_Channel5',
-                'HPDMA1_Channel6',
-                'HPDMA1_Channel7',
-                'SAI1_A',
-                'SAI1_B',
-                'SAI2_A',
-                'SAI2_B',
-                'I2C1_EV',
-                'I2C1_ER',
-                'I2C2_EV',
-                'I2C2_ER',
-                'I2C3_EV',
-                'I2C3_ER',
-                'USART1',
-                'USART2',
-                'USART3',
-                'UART4',
-                'UART5',
-                'UART7',
-                'UART8',
-                'I3C1_EV',
-                'I3C1_ER',
-                'OTG_HS',
-                'ETH',
-                'CORDIC',
-                'GFXTIM',
-                'DCMIPP',
-                None,
-                None,
-                'DMA2D',
-                'JPEG',
-                'GFXMMU',
-                'I3C1_WKUP',
-                'MCE1',
-                'MCE2',
-                'MCE3',
-                'XSPI1',
-                'XSPI2',
-                'FMC',
-                'SDMMC1',
-                'SDMMC2',
-                None,
-                None,
-                'OTG_FS',
-                'TIM12',
-                'TIM13',
-                'TIM14',
-                'TIM15',
-                'TIM16',
-                'TIM17',
-                'LPTIM1',
-                'LPTIM2',
-                'LPTIM3',
-                'LPTIM4',
-                'LPTIM5',
-                'SPDIF_RX',
-                'MDIOS',
-                'ADF1_FLT0',
-                'CRS',
-                'UCPD1',
-                'CEC',
-                'PSSI',
-                'LPUART1',
-                'WAKEUP_PIN',
-                'GPDMA1_Channel8',
-                'GPDMA1_Channel9',
-                'GPDMA1_Channel10',
-                'GPDMA1_Channel11',
-                'GPDMA1_Channel12',
-                'GPDMA1_Channel13',
-                'GPDMA1_Channel14',
-                'GPDMA1_Channel15',
-                'HPDMA1_Channel8',
-                'HPDMA1_Channel9',
-                'HPDMA1_Channel10',
-                'HPDMA1_Channel11',
-                'HPDMA1_Channel12',
-                'HPDMA1_Channel13',
-                'HPDMA1_Channel14',
-                'HPDMA1_Channel15',
-                None,
-                None,
-                None,
-                'FDCAN1_IT0',
-                'FDCAN1_IT1',
-                'FDCAN2_IT0',
-                'FDCAN2_IT1',
-            ),
-        )
+    #include "interrupt_vector_table.meta"
+    /* #meta
 
-        @Meta.ifs(INTERRUPT_TABLE, style='#if')
-        def _(__):
+        @Meta.ifs(TARGETS.mcus, style = '#if')
+        def _(mcu):
+            yield f'TARGET_MCU_IS_{mcu}'
 
-            target_mcu, entries = __
 
-            yield f'TARGET_MCU_IS_{target_mcu}'
+
+            # Load the file which details the list of all interrupt routines supported by the MCU.
+
+            interrupt_vector_table_file = root(f'./electrical/system/interrupt_vector_table_{mcu}.txt')
+
+            if not interrupt_vector_table_file.is_file():
+                with log(ansi = 'fg_red'):
+                    log(f'[ERROR] Couldn\'t find "{interrupt_vector_table_file}"!')
+                    log(f'        This is needed so I know what the interrupt vector table for {mcu} looks like.')
+                    log(f'        See the reference manual for {mcu}.')
+                raise MetaError
+
+
+
+            # Parse the entries.
+
+            entries = [entry.strip() for entry in interrupt_vector_table_file.read_text().splitlines()]
+            entries = [None if entry == 'Reserved' else entry for entry in entries if not entry.startswith('#')]
+
+
+
+            # Generate the assembly to define the interrupt vector table.
 
             for entryi, entry in enumerate(entries):
 
@@ -277,9 +137,9 @@ HANDLER_Reset:
 
                 else:
 
-                    Meta.line([ # TODO Meta.line needs to be able to handle multiple args.
+                    Meta.line(
                         f'.word HANDLER_{entry}'                           , # Insert the address of the handler routine.
                         f'.weak HANDLER_{entry}'                           , # If there exists an implementation of the handler, use it.
                         f'.set  HANDLER_{entry}, HANDLER_Default_indirect' , # Otherwise, use the default handler.
-                    ])
+                    )
     */
