@@ -1,8 +1,8 @@
-#meta root, Obj, Record, Table, log, ErrorLift, CMSIS_SET, CMSIS_WRITE, CMSIS_SPINLOCK :
+#meta root, Obj, Record, Table, log, ErrorLift, CMSIS_SET, CMSIS_WRITE, CMSIS_SPINLOCK, TARGETS :
 # TODO Provide explaination on how this file works?
 
 import enum
-from deps.pxd.utils import root, coalesce, repr_in_c, find_dupe, ljusts, Obj, Record, Table, ErrorLift
+from deps.pxd.utils import root, coalesce, repr_in_c, find_dupe, ljusts, Obj, Record, Table, OrdSet, ErrorLift
 from deps.pxd.log   import log
 
 
@@ -235,7 +235,7 @@ BUILD = root('./build')
 
 #
 # Specialized tuple so that we can have a tuple of different firmware targets,
-# but this tuple also has a method where we can get a specific firmware target by name like a dictionary.
+# but also some additional properties to make it easy to work with.
 #
 
 class TargetTuple(tuple):
@@ -243,6 +243,10 @@ class TargetTuple(tuple):
     def __new__(cls, elements):
         return super(TargetTuple, cls).__new__(cls, elements)
 
+    def __init__(self, elements):
+        self.mcus = OrdSet(target.mcu for target in self) # Set of all MCUs in use.
+
+    # Get a specific target by name.
     def get(self, target_name):
         target, = (target for target in self if target.name == target_name)
         return target
