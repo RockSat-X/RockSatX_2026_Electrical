@@ -710,7 +710,7 @@ def debug(
     # Launch the debugging session.
 
     execute(
-        bash                  = f'set -m; {gdbserver} > /dev/null & {gdb}',
+        bash                  = f'set -m; {gdbserver} 1> /dev/null 2> /dev/null & {gdb}',
         powershell            = f'{gdbserver} & {gdb}',
         keyboard_interrupt_ok = True, # Whenever we halt execution in GDB using CTRL-C, a KeyboardInterrupt exception is raised, but this is a false-positive.
     )
