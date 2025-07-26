@@ -1,8 +1,8 @@
-#meta root, Obj, Record, Table, log, MetaError, ErrorLift, CMSIS_SET, CMSIS_WRITE, CMSIS_SPINLOCK, TARGETS :
+#meta root, coalesce, mk_dict, OrdSet, Obj, Record, Table, log, MetaError, ErrorLift, CMSIS_SET, CMSIS_WRITE, CMSIS_SPINLOCK, TARGETS :
 # TODO Provide explaination on how this file works?
 
 import enum
-from deps.pxd.utils            import root, coalesce, repr_in_c, find_dupe, ljusts, Obj, Record, Table, OrdSet, ErrorLift
+from deps.pxd.utils            import root, coalesce, mk_dict, repr_in_c, find_dupe, ljusts, Obj, Record, Table, OrdSet, ErrorLift
 from deps.pxd.log              import log
 from deps.pxd.metapreprocessor import MetaError
 
